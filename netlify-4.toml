@@ -1,0 +1,18 @@
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# VyaparSetu AI — Netlify Configuration
+# This file tells Netlify how to set up your site.
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[build]
+  # Where your main HTML file lives
+  publish = "."
+  # Where your serverless functions live
+  functions = "netlify/functions"
+
+# This creates a clean URL for your AI function:
+# Instead of: /.netlify/functions/chat
+# It becomes: /api/chat  (much cleaner!)
+[[redirects]]
+  from = "/api/chat"
+  to = "/.netlify/functions/chat"
+  status = 200

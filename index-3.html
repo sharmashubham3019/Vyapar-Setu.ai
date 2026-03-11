@@ -1,0 +1,1953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VyaparSetu AI — Smart MSME Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+:root {
+  --saffron: #FF6B35; --deep-saffron: #E85D25; --gold: #F7C948;
+  --teal: #00897B; --teal-light: #4DB6AC;
+  --navy: #0A1628; --navy2: #111F33; --navy3: #1A2C40; --navy4: #243347;
+  --card-bg: #162035; --card-border: rgba(255,107,53,0.12);
+  --text-primary: #EEF2F7; --text-secondary: #8BA3BB; --text-muted: #4E6478;
+  --success: #3ECF8E; --warning: #F5C542; --danger: #F26B6B; --info: #4DA6FF;
+  --ai-purple: #A78BFA; --ai-purple-dark: #7C3AED; --ai-glow: rgba(167,139,250,0.15);
+  --radius: 18px; --radius-sm: 11px; --shadow: 0 10px 40px rgba(0,0,0,0.4);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--navy);color:var(--text-primary);min-height:100vh;overflow-x:hidden;}
+
+/* ── LOGIN ── */
+#loginScreen{position:fixed;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(255,107,53,0.08) 0%,transparent 60%),radial-gradient(ellipse at 80% 20%,rgba(167,139,250,0.06) 0%,transparent 50%),var(--navy);display:flex;align-items:center;justify-content:center;z-index:1000;}
+.login-card{background:rgba(22,32,53,0.97);border:1px solid rgba(255,107,53,0.18);border-radius:26px;padding:52px 44px;width:440px;backdrop-filter:blur(24px);box-shadow:0 24px 64px rgba(0,0,0,0.6);animation:popIn .5s cubic-bezier(.34,1.56,.64,1);}
+@keyframes popIn{from{opacity:0;transform:scale(.92) translateY(20px);}to{opacity:1;transform:scale(1) translateY(0);}}
+.login-brand{display:flex;align-items:center;gap:14px;margin-bottom:6px;}
+.brand-icon{width:52px;height:52px;background:linear-gradient(135deg,var(--saffron),var(--gold));border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 6px 20px rgba(255,107,53,0.4);}
+.brand-name{font-family:'Sora',sans-serif;font-size:30px;font-weight:800;background:linear-gradient(135deg,var(--saffron),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.ai-badge-login{display:inline-flex;align-items:center;gap:6px;background:rgba(167,139,250,0.12);border:1px solid rgba(167,139,250,0.25);border-radius:99px;padding:4px 12px;font-size:12px;color:var(--ai-purple);margin-bottom:28px;margin-top:6px;}
+.role-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px;}
+.role-card{padding:14px 8px;background:var(--navy3);border:2px solid transparent;border-radius:12px;cursor:pointer;text-align:center;transition:all .2s;color:var(--text-secondary);font-size:12px;font-weight:500;}
+.role-card span{font-size:22px;display:block;margin-bottom:5px;}
+.role-card:hover{border-color:rgba(255,107,53,0.3);color:var(--text-primary);}
+.role-card.active{border-color:var(--saffron);color:var(--saffron);background:rgba(255,107,53,0.08);}
+.form-field{margin-bottom:16px;}
+.form-field label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;}
+.form-field input{width:100%;padding:13px 16px;background:var(--navy4);border:1px solid rgba(255,255,255,0.08);border-radius:10px;color:var(--text-primary);font-family:'DM Sans';font-size:14px;transition:border-color .2s;}
+.form-field input:focus{outline:none;border-color:var(--saffron);}
+.login-btn{width:100%;padding:15px;background:linear-gradient(135deg,var(--saffron),var(--deep-saffron));border:none;border-radius:11px;color:#fff;font-family:'Sora';font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;margin-top:8px;letter-spacing:.3px;}
+.login-btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(255,107,53,0.45);}
+
+/* ── APP SHELL ── */
+#app{display:none;}
+.shell{display:flex;height:100vh;}
+
+/* ── SIDEBAR ── */
+.sidebar{width:248px;min-width:248px;background:var(--navy2);border-right:1px solid rgba(255,255,255,0.05);display:flex;flex-direction:column;padding:0 0 20px;}
+.sb-header{padding:22px 20px 18px;border-bottom:1px solid rgba(255,255,255,0.05);}
+.sb-logo{font-family:'Sora';font-size:21px;font-weight:800;background:linear-gradient(135deg,var(--saffron),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.sb-logo-sub{font-size:10px;color:var(--text-muted);letter-spacing:.5px;margin-top:1px;}
+.sb-user{margin:14px 12px;padding:12px;background:rgba(255,107,53,0.08);border:1px solid rgba(255,107,53,0.15);border-radius:12px;display:flex;align-items:center;gap:10px;}
+.sb-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--saffron),var(--gold));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:#fff;}
+.sb-uname{font-size:13px;font-weight:600;}
+.sb-urole{font-size:10px;color:var(--saffron);text-transform:uppercase;letter-spacing:.5px;}
+.sb-section{padding:0 12px;margin-top:8px;}
+.sb-label{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;padding:2px 8px;margin-bottom:4px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:10px;cursor:pointer;color:var(--text-secondary);font-size:13px;font-weight:500;margin-bottom:2px;transition:all .18s;position:relative;}
+.nav-item:hover{background:rgba(255,255,255,0.04);color:var(--text-primary);}
+.nav-item.active{background:rgba(255,107,53,0.11);color:var(--saffron);}
+.nav-item .ni{font-size:16px;width:22px;text-align:center;}
+.nav-badge{margin-left:auto;background:var(--danger);color:#fff;font-size:10px;padding:2px 7px;border-radius:99px;}
+.ai-nav-item{background:linear-gradient(135deg,rgba(167,139,250,0.1),rgba(167,139,250,0.05));border:1px solid rgba(167,139,250,0.2);color:var(--ai-purple)!important;}
+.ai-nav-item:hover{background:linear-gradient(135deg,rgba(167,139,250,0.18),rgba(167,139,250,0.1))!important;}
+.ai-nav-item.active{background:linear-gradient(135deg,rgba(167,139,250,0.2),rgba(167,139,250,0.1))!important;border-color:rgba(167,139,250,0.4);}
+.ai-pulse{width:8px;height:8px;border-radius:50%;background:var(--ai-purple);margin-left:auto;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(167,139,250,.5);}50%{box-shadow:0 0 0 5px rgba(167,139,250,0);}}
+.sb-footer{margin-top:auto;padding:14px 12px 0;border-top:1px solid rgba(255,255,255,0.05);}
+.logout-btn{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;color:var(--text-muted);font-size:13px;transition:all .2s;}
+.logout-btn:hover{color:var(--danger);background:rgba(242,107,107,0.07);}
+
+/* ── MAIN ── */
+.main{flex:1;overflow-y:auto;background:var(--navy);padding:28px;}
+.page{display:none;animation:fadeIn .3s ease;}
+.page.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.page-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:28px;}
+.page-title{font-family:'Sora';font-size:24px;font-weight:700;}
+.page-sub{font-size:13px;color:var(--text-muted);margin-top:4px;}
+
+/* ── BUTTONS ── */
+.btn{padding:10px 20px;border-radius:10px;font-family:'DM Sans';font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .18s;display:inline-flex;align-items:center;gap:7px;}
+.btn-primary{background:linear-gradient(135deg,var(--saffron),var(--deep-saffron));color:#fff;}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(255,107,53,.38);}
+.btn-ghost{background:var(--card-bg);color:var(--text-secondary);border:1px solid rgba(255,255,255,0.07);}
+.btn-ghost:hover{border-color:rgba(255,107,53,.28);color:var(--text-primary);}
+.btn-ai{background:linear-gradient(135deg,rgba(167,139,250,.18),rgba(124,58,237,.12));color:var(--ai-purple);border:1px solid rgba(167,139,250,.3);}
+.btn-ai:hover{background:linear-gradient(135deg,rgba(167,139,250,.28),rgba(124,58,237,.2));box-shadow:0 6px 20px rgba(167,139,250,.2);}
+.btn-sm{padding:7px 14px;font-size:12px;}
+
+/* ── CARDS ── */
+.card{background:var(--card-bg);border:1px solid rgba(255,255,255,0.05);border-radius:var(--radius);padding:22px;}
+.card-title{font-family:'Sora';font-size:14px;font-weight:600;color:var(--text-secondary);margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
+.kpi{background:var(--card-bg);border:1px solid rgba(255,255,255,0.05);border-radius:var(--radius);padding:20px;position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s;cursor:default;}
+.kpi:hover{transform:translateY(-3px);box-shadow:var(--shadow);}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.kpi.o::before{background:linear-gradient(90deg,var(--saffron),var(--gold));}
+.kpi.t::before{background:linear-gradient(90deg,var(--teal),var(--teal-light));}
+.kpi.b::before{background:linear-gradient(90deg,var(--info),#7c4dff);}
+.kpi.g::before{background:linear-gradient(90deg,var(--success),#81c784);}
+.kpi.p::before{background:linear-gradient(90deg,var(--ai-purple),#ec4899);}
+.kpi-lbl{font-size:12px;color:var(--text-muted);margin-bottom:10px;}
+.kpi-val{font-family:'Sora';font-size:26px;font-weight:700;}
+.kpi-sub{font-size:11px;color:var(--success);margin-top:4px;}
+.kpi-sub.down{color:var(--danger);}
+.kpi-ico{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:34px;opacity:.12;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.cr{display:grid;grid-template-columns:2fr 1fr;gap:16px;}
+.mb16{margin-bottom:16px;}
+.mb24{margin-bottom:24px;}
+
+/* ── TABLES ── */
+table{width:100%;border-collapse:collapse;}
+thead th{text-align:left;font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.05);}
+tbody tr{transition:background .15s;}
+tbody tr:hover{background:rgba(255,255,255,0.025);}
+tbody td{padding:12px 14px;font-size:13px;color:var(--text-secondary);border-bottom:1px solid rgba(255,255,255,0.03);}
+.badge{display:inline-block;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:600;}
+.bs{background:rgba(62,207,142,.13);color:var(--success);}
+.bw{background:rgba(245,197,66,.13);color:var(--warning);}
+.bd{background:rgba(242,107,107,.13);color:var(--danger);}
+.bi{background:rgba(77,166,255,.13);color:var(--info);}
+.bo{background:rgba(255,107,53,.13);color:var(--saffron);}
+.bp{background:rgba(167,139,250,.13);color:var(--ai-purple);}
+
+/* ── AI ADVISOR PANEL ── */
+#aiPage .ai-hero{background:linear-gradient(135deg,rgba(167,139,250,0.1) 0%,rgba(124,58,237,0.06) 50%,rgba(255,107,53,0.06) 100%);border:1px solid rgba(167,139,250,0.2);border-radius:var(--radius);padding:28px;margin-bottom:24px;position:relative;overflow:hidden;}
+#aiPage .ai-hero::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:radial-gradient(circle,rgba(167,139,250,0.15),transparent 70%);pointer-events:none;}
+.ai-hero-title{font-family:'Sora';font-size:22px;font-weight:700;background:linear-gradient(135deg,var(--ai-purple),#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px;}
+.ai-hero-sub{font-size:13px;color:var(--text-muted);max-width:600px;}
+.quick-insights{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px;}
+.qi-card{background:var(--card-bg);border:1px solid rgba(255,255,255,0.05);border-radius:var(--radius-sm);padding:18px;cursor:pointer;transition:all .2s;position:relative;}
+.qi-card:hover{border-color:rgba(167,139,250,0.3);transform:translateY(-2px);box-shadow:0 8px 24px rgba(167,139,250,0.12);}
+.qi-card::after{content:'→';position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:16px;transition:transform .2s;}
+.qi-card:hover::after{transform:translateY(-50%) translateX(4px);color:var(--ai-purple);}
+.qi-icon{font-size:24px;margin-bottom:10px;}
+.qi-title{font-size:13px;font-weight:600;margin-bottom:4px;}
+.qi-desc{font-size:12px;color:var(--text-muted);}
+.chat-area{background:var(--card-bg);border:1px solid rgba(255,255,255,0.05);border-radius:var(--radius);padding:22px;}
+.chat-title{font-family:'Sora';font-size:14px;font-weight:600;color:var(--text-secondary);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.chat-msgs{min-height:280px;max-height:380px;overflow-y:auto;display:flex;flex-direction:column;gap:14px;margin-bottom:16px;padding-right:4px;}
+.msg{display:flex;gap:10px;animation:msgIn .3s ease;}
+@keyframes msgIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.msg.user{flex-direction:row-reverse;}
+.msg-avatar{width:32px;height:32px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:14px;}
+.msg.ai .msg-avatar{background:linear-gradient(135deg,var(--ai-purple),#7c3aed);}
+.msg.user .msg-avatar{background:linear-gradient(135deg,var(--saffron),var(--gold));}
+.msg-bubble{max-width:75%;padding:12px 16px;border-radius:14px;font-size:13px;line-height:1.6;}
+.msg.ai .msg-bubble{background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.15);color:var(--text-primary);}
+.msg.user .msg-bubble{background:rgba(255,107,53,0.12);border:1px solid rgba(255,107,53,0.18);color:var(--text-primary);}
+.msg-bubble strong{color:var(--saffron);}
+.msg-bubble .ai-tag{color:var(--ai-purple);font-weight:600;}
+.typing{display:flex;gap:5px;align-items:center;padding:12px 16px;background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.12);border-radius:14px;max-width:80px;}
+.typing span{width:7px;height:7px;background:var(--ai-purple);border-radius:50%;animation:bounce .8s infinite;}
+.typing span:nth-child(2){animation-delay:.15s;}
+.typing span:nth-child(3){animation-delay:.3s;}
+@keyframes bounce{0%,80%,100%{transform:translateY(0);}40%{transform:translateY(-8px);}}
+.chat-input-row{display:flex;gap:10px;}
+.chat-input{flex:1;padding:13px 16px;background:var(--navy3);border:1px solid rgba(255,255,255,0.08);border-radius:10px;color:var(--text-primary);font-family:'DM Sans';font-size:14px;transition:border-color .2s;}
+.chat-input:focus{outline:none;border-color:rgba(167,139,250,0.4);}
+.send-btn{padding:13px 20px;background:linear-gradient(135deg,var(--ai-purple-dark),#6d28d9);border:none;border-radius:10px;color:#fff;cursor:pointer;font-size:16px;transition:all .2s;}
+.send-btn:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(124,58,237,0.4);}
+.send-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+.suggested-qs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
+.sq{padding:7px 14px;background:rgba(167,139,250,0.07);border:1px solid rgba(167,139,250,0.18);border-radius:99px;font-size:12px;color:var(--ai-purple);cursor:pointer;transition:all .18s;}
+.sq:hover{background:rgba(167,139,250,0.14);border-color:rgba(167,139,250,0.35);}
+
+/* ── AI INSIGHT CARDS (on dashboard) ── */
+.ai-insight-strip{background:linear-gradient(135deg,rgba(167,139,250,0.08),rgba(255,107,53,0.05));border:1px solid rgba(167,139,250,0.18);border-radius:var(--radius-sm);padding:16px 20px;margin-bottom:24px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .2s;}
+.ai-insight-strip:hover{border-color:rgba(167,139,250,0.35);box-shadow:0 6px 20px rgba(167,139,250,.1);}
+.ais-icon{font-size:24px;flex-shrink:0;}
+.ais-content{flex:1;}
+.ais-label{font-size:11px;color:var(--ai-purple);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;}
+.ais-text{font-size:13px;color:var(--text-primary);}
+.ais-cta{font-size:12px;color:var(--ai-purple);white-space:nowrap;display:flex;align-items:center;gap:4px;}
+
+/* ── ANOMALY ALERTS ── */
+.anomaly-card{background:var(--card-bg);border:1px solid rgba(242,107,107,.2);border-radius:var(--radius-sm);padding:14px 18px;display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;}
+.anomaly-icon{font-size:20px;flex-shrink:0;}
+.anomaly-title{font-size:13px;font-weight:600;margin-bottom:3px;}
+.anomaly-desc{font-size:12px;color:var(--text-muted);}
+.anomaly-ai{font-size:11px;color:var(--ai-purple);margin-top:6px;font-style:italic;}
+
+/* ── INVENTORY ── */
+.inv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px;}
+.stock-card{background:var(--card-bg);border:1px solid rgba(255,255,255,0.05);border-radius:var(--radius-sm);padding:18px;transition:transform .2s;}
+.stock-card:hover{transform:translateY(-2px);}
+.sc-name{font-weight:600;font-size:14px;margin-bottom:4px;}
+.sc-meta{font-size:12px;color:var(--text-muted);margin-bottom:12px;}
+.sc-bar{height:6px;background:rgba(255,255,255,0.07);border-radius:99px;overflow:hidden;}
+.sc-fill{height:100%;border-radius:99px;transition:width .8s ease;}
+.sc-nums{display:flex;justify-content:space-between;margin-top:7px;font-size:11px;color:var(--text-muted);}
+.sc-ai-tip{font-size:11px;color:var(--ai-purple);margin-top:8px;display:flex;align-items:center;gap:5px;font-style:italic;}
+
+/* ── PRODUCTION ── */
+.ord-card{background:var(--card-bg);border:1px solid rgba(255,255,255,0.05);border-radius:var(--radius-sm);padding:18px;margin-bottom:12px;}
+.ord-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;}
+.ord-id{font-size:11px;color:var(--text-muted);}
+.ord-title{font-weight:600;font-size:15px;}
+.prog-wrap{height:8px;background:rgba(255,255,255,0.07);border-radius:99px;overflow:hidden;margin:8px 0;}
+.prog-bar{height:100%;border-radius:99px;transition:width .8s ease;}
+.ord-meta{display:flex;gap:16px;font-size:12px;color:var(--text-muted);margin-top:6px;}
+.ord-ai-risk{font-size:11px;padding:5px 12px;background:rgba(245,197,66,.1);border:1px solid rgba(245,197,66,.2);border-radius:99px;color:var(--warning);display:inline-flex;align-items:center;gap:5px;margin-top:8px;}
+
+/* ── CASH FLOW ── */
+.cf-item{display:flex;align-items:center;gap:12px;padding:13px;background:var(--navy3);border-radius:var(--radius-sm);border:1px solid rgba(255,255,255,0.05);margin-bottom:8px;}
+.cf-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.cf-lbl{font-size:13px;flex:1;}
+.cf-due{font-size:11px;color:var(--text-muted);}
+.cf-amt{font-size:14px;font-weight:600;}
+
+/* TABS */
+.tabs{display:flex;gap:4px;background:var(--card-bg);padding:4px;border-radius:10px;width:fit-content;margin-bottom:20px;}
+.tab-btn{padding:8px 16px;border-radius:7px;cursor:pointer;font-size:13px;font-weight:500;color:var(--text-muted);border:none;background:transparent;font-family:'DM Sans';transition:all .18s;}
+.tab-btn.active{background:var(--saffron);color:#fff;}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--card-bg);border:1px solid rgba(255,107,53,.25);border-radius:11px;padding:14px 20px;font-size:13px;box-shadow:var(--shadow);display:flex;align-items:center;gap:10px;transform:translateY(80px);opacity:0;transition:all .3s;z-index:9999;max-width:340px;}
+.toast.show{transform:translateY(0);opacity:1;}
+
+/* ── DEMO MODE ── */
+.demo-toggle-wrap{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:18px;padding:14px;background:rgba(167,139,250,0.07);border:1px solid rgba(167,139,250,0.18);border-radius:12px;}
+.demo-toggle-label{font-size:13px;color:var(--text-secondary);}
+.demo-toggle-label strong{color:var(--ai-purple);}
+.toggle-switch{position:relative;width:44px;height:24px;cursor:pointer;}
+.toggle-switch input{opacity:0;width:0;height:0;}
+.toggle-slider{position:absolute;inset:0;background:var(--navy4);border-radius:99px;transition:.3s;border:1px solid rgba(255,255,255,0.1);}
+.toggle-slider:before{content:'';position:absolute;width:18px;height:18px;left:2px;bottom:2px;background:#fff;border-radius:50%;transition:.3s;}
+.toggle-switch input:checked + .toggle-slider{background:var(--ai-purple-dark);}
+.toggle-switch input:checked + .toggle-slider:before{transform:translateX(20px);}
+.demo-banner{background:linear-gradient(90deg,rgba(167,139,250,0.15),rgba(124,58,237,0.1));border-bottom:1px solid rgba(167,139,250,0.25);padding:7px 20px;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ai-purple);font-weight:600;letter-spacing:.3px;}
+.demo-dot{width:7px;height:7px;border-radius:50%;background:var(--ai-purple);animation:pulse 1.5s infinite;}
+.demo-badge{background:rgba(167,139,250,0.15);border:1px solid rgba(167,139,250,0.3);border-radius:99px;padding:2px 10px;font-size:11px;margin-left:auto;color:var(--ai-purple);}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.08);border-radius:99px;}
+canvas{max-height:260px;}
+
+/* ACCESS DENIED */
+.access-denied{display:flex;flex-direction:column;align-items:center;justify-content:center;height:300px;color:var(--text-muted);text-align:center;}
+
+/* QUOTE PREVIEW */
+.quote-preview{background:#fff;color:#1a1a1a;border-radius:var(--radius);padding:32px;margin-top:16px;}
+.qp-brand{font-size:22px;font-weight:800;color:#FF6B35;}
+.qp-num{text-align:right;font-size:13px;color:#666;}
+.qp-div{border:none;border-top:2px solid #FF6B35;margin:14px 0;}
+.qp-table{width:100%;border-collapse:collapse;margin:14px 0;}
+.qp-table th{background:#FF6B35;color:#fff;padding:10px 13px;text-align:left;font-size:13px;}
+.qp-table td{padding:10px 13px;font-size:13px;border-bottom:1px solid #eee;}
+.qp-total{text-align:right;margin-top:14px;font-size:18px;font-weight:700;color:#FF6B35;}
+
+/* EMP */
+.emp-card{display:flex;align-items:center;gap:14px;padding:14px;background:var(--card-bg);border:1px solid rgba(255,255,255,0.05);border-radius:var(--radius-sm);margin-bottom:10px;}
+.emp-av{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;color:#fff;flex-shrink:0;}
+.emp-inf{flex:1;}
+.emp-nm{font-weight:600;font-size:14px;}
+.emp-rl{font-size:12px;color:var(--text-muted);}
+.emp-stats{display:flex;gap:16px;}
+.es{text-align:center;}
+.es-v{font-weight:700;font-size:14px;}
+.es-l{font-size:10px;color:var(--text-muted);}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-brand"><div class="brand-icon">🏭</div><div class="brand-name">VyaparSetu</div></div>
+    <div class="ai-badge-login">✨ Now with AI Business Intelligence</div>
+    <div class="role-grid">
+      <div class="role-card active" onclick="selRole('owner',this)"><span>👑</span>Owner</div>
+      <div class="role-card" onclick="selRole('manager',this)"><span>🧑‍💼</span>Manager</div>
+      <div class="role-card" onclick="selRole('staff',this)"><span>👷</span>Staff</div>
+    </div>
+    <div class="form-field"><label>Mobile / Email</label><input id="lu" value="owner@vyaparsetu.in"></div>
+    <div class="form-field"><label>Password</label><input type="password" id="lp" value="12345"></div>
+    <button class="login-btn" onclick="doLogin()">🚀 Enter VyaparSetu</button>
+    <div class="demo-toggle-wrap">
+      <div class="demo-toggle-label">✨ <strong>Demo Mode</strong> — No API key needed</div>
+      <label class="toggle-switch">
+        <input type="checkbox" id="demoToggle" checked>
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+<div class="shell">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sb-header">
+    <div class="sb-logo">VyaparSetu</div>
+    <div class="sb-logo-sub">MSME BUSINESS HUB</div>
+  </div>
+  <div class="sb-user">
+    <div class="sb-avatar" id="sbAv">R</div>
+    <div><div class="sb-uname" id="sbName">Rajesh Gupta</div><div class="sb-urole" id="sbRole">Owner</div></div>
+  </div>
+  <div class="sb-section">
+    <div class="sb-label">Main</div>
+    <div class="nav-item active" onclick="showPage('dash',this)"><span class="ni">📊</span>Dashboard</div>
+    <div class="nav-item" onclick="showPage('inv',this)"><span class="ni">📦</span>Inventory<span class="nav-badge" id="lsBadge">3</span></div>
+    <div class="nav-item" onclick="showPage('quot',this)"><span class="ni">📋</span>Quotations</div>
+    <div class="nav-item" onclick="showPage('bill',this)"><span class="ni">🧾</span>Billing</div>
+    <div class="nav-item" onclick="showPage('prod',this)"><span class="ni">⚙️</span>Production</div>
+    <div class="nav-item" onclick="showPage('labour',this)"><span class="ni">👷</span>Labour</div>
+    <div class="nav-item" id="cfNav" onclick="showPage('cf',this)"><span class="ni">💸</span>Cash Flow</div>
+  </div>
+  <div class="sb-section" style="margin-top:12px;">
+    <div class="sb-label">AI Features</div>
+    <div class="nav-item ai-nav-item" onclick="showPage('ai',this)"><span class="ni">🤖</span>AI Advisor<div class="ai-pulse"></div></div>
+  </div>
+  <div class="sb-footer">
+    <div class="logout-btn" onclick="logout()">🚪 Logout</div>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main">
+<!-- DEMO BANNER -->
+<div class="demo-banner" id="demoBanner" style="display:none;margin:-28px -28px 24px -28px;padding:8px 28px;">
+  <div class="demo-dot"></div>
+  🎬 DEMO MODE — AI responses are pre-written. No API key or internet needed.
+  <span class="demo-badge">Safe for Pitching</span>
+</div>
+
+<!-- ══════ DASHBOARD ══════ -->
+<div class="page active" id="page-dash">
+  <div class="page-hdr">
+    <div><div class="page-title" id="dashGreet">Good morning, Rajesh 👋</div><div class="page-sub">Your business at a glance — February 2026</div></div>
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-ai" onclick="askAI('Give me a full business health summary for this month based on the dashboard data')">🤖 AI Summary</button>
+      <button class="btn btn-primary" onclick="toast('📊 Report exported!')">📤 Export</button>
+    </div>
+  </div>
+
+  <!-- AI Insight Strip -->
+  <div class="ai-insight-strip" onclick="showPage('ai', document.querySelector('.ai-nav-item'))">
+    <div class="ais-icon">🤖</div>
+    <div class="ais-content">
+      <div class="ais-label">✨ AI Business Insight</div>
+      <div class="ais-text" id="dashInsight">Revenue is up 12% but Kumar & Sons is 18 days overdue — follow up today. Welding electrode stock critical. Cash runway looks healthy at ₹3.7L projected closing.</div>
+    </div>
+    <div class="ais-cta">Ask AI →</div>
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi o"><div class="kpi-lbl">Revenue (Feb)</div><div class="kpi-val">₹4.8L</div><div class="kpi-sub">↑ 12% vs last month</div><div class="kpi-ico">💰</div></div>
+    <div class="kpi t"><div class="kpi-lbl">Active Orders</div><div class="kpi-val">18</div><div class="kpi-sub">↑ 3 new today</div><div class="kpi-ico">📦</div></div>
+    <div class="kpi b"><div class="kpi-lbl">Pending Payments</div><div class="kpi-val">₹1.2L</div><div class="kpi-sub down">₹21K overdue</div><div class="kpi-ico">⏳</div></div>
+    <div class="kpi g"><div class="kpi-lbl">Staff Present</div><div class="kpi-val">14/16</div><div class="kpi-sub">2 on leave</div><div class="kpi-ico">👷</div></div>
+  </div>
+
+  <div class="cr mb24">
+    <div class="card">
+      <div class="card-title">Revenue vs Expenses <button class="btn btn-ai btn-sm" onclick="askAI('Analyze my revenue and expense trends over the last 6 months. What patterns do you see and what should I do?')">🤖 Analyze</button></div>
+      <canvas id="revChart"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-title">Order Status</div>
+      <canvas id="ordChart"></canvas>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="card-title">Recent Transactions <button class="btn btn-ai btn-sm" onclick="askAI('Which clients are high risk for delayed payments? Based on recent transactions, who should I follow up with urgently?')">🤖 Risk Check</button></div>
+      <table><thead><tr><th>Client</th><th>Amount</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>Sharma Industries</td><td>₹42,000</td><td><span class="badge bs">Received</span></td></tr>
+        <tr><td>Mehta Fabricators</td><td>₹28,500</td><td><span class="badge bw">Pending</span></td></tr>
+        <tr><td>Patel Engineering</td><td>₹65,000</td><td><span class="badge bs">Received</span></td></tr>
+        <tr><td>Kumar & Sons</td><td>₹18,200</td><td><span class="badge bd">Overdue</span></td></tr>
+        <tr><td>Singh Metals</td><td>₹33,800</td><td><span class="badge bi">Processing</span></td></tr>
+      </tbody></table>
+    </div>
+    <div class="card">
+      <div class="card-title">Upcoming Bills <button class="btn btn-ai btn-sm" onclick="askAI('I have several bills due this month. Based on my cash position of ₹2.8L opening balance and ₹4.1L inflow, can I comfortably pay everything? What should I prioritize?')">🤖 Plan</button></div>
+      <table><thead><tr><th>Description</th><th>Amount</th><th>Due</th></tr></thead>
+      <tbody>
+        <tr><td>Machinery EMI</td><td>₹22,000</td><td><span class="badge bd">21 Feb</span></td></tr>
+        <tr><td>Raw Material</td><td>₹55,000</td><td><span class="badge bw">25 Feb</span></td></tr>
+        <tr><td>GST Filing</td><td>₹8,400</td><td><span class="badge bw">28 Feb</span></td></tr>
+        <tr><td>Staff Salary</td><td>₹1,40,000</td><td><span class="badge bi">1 Mar</span></td></tr>
+      </tbody></table>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ INVENTORY ══════ -->
+<div class="page" id="page-inv">
+  <div class="page-hdr">
+    <div><div class="page-title">📦 Inventory</div><div class="page-sub">Smart stock management with AI reorder suggestions</div></div>
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-ai" onclick="askAI('Based on my current inventory levels — HR Sheet at 72%, MS Angle at 24%, Stainless Steel at 55%, Welding Electrodes at 18% — which items should I reorder urgently and what quantities do you suggest?')">🤖 Reorder Advice</button>
+      <button class="btn btn-primary" onclick="toast('✅ Item form opened!')">+ Add Item</button>
+    </div>
+  </div>
+  <div class="kpi-grid">
+    <div class="kpi o"><div class="kpi-lbl">Total SKUs</div><div class="kpi-val">86</div><div class="kpi-ico">🗂️</div></div>
+    <div class="kpi t"><div class="kpi-lbl">Stock Value</div><div class="kpi-val">₹3.4L</div><div class="kpi-ico">💎</div></div>
+    <div class="kpi b"><div class="kpi-lbl">Low Stock Items</div><div class="kpi-val">3</div><div class="kpi-sub down">Needs reorder</div><div class="kpi-ico">⚠️</div></div>
+    <div class="kpi p"><div class="kpi-lbl">AI Forecast</div><div class="kpi-val">5 items</div><div class="kpi-sub">running low in 7 days</div><div class="kpi-ico">🔮</div></div>
+  </div>
+  <div class="inv-grid">
+    <div class="stock-card">
+      <div class="sc-name">HR Sheet 2mm (IS 2062)</div><div class="sc-meta">Raw Material · SKU-001</div>
+      <div class="sc-bar"><div class="sc-fill" style="width:72%;background:var(--success)"></div></div>
+      <div class="sc-nums"><span>720 / 1000 kg</span><span class="badge bs">Good</span></div>
+      <div class="sc-ai-tip">🤖 At current usage, lasts ~21 days</div>
+    </div>
+    <div class="stock-card">
+      <div class="sc-name">MS Angle 40×40mm</div><div class="sc-meta">Raw Material · SKU-002</div>
+      <div class="sc-bar"><div class="sc-fill" style="width:24%;background:var(--danger)"></div></div>
+      <div class="sc-nums"><span>120 / 500 kg</span><span class="badge bd">Reorder!</span></div>
+      <div class="sc-ai-tip" style="color:var(--danger)">🤖 Will run out in ~4 days. Order 350kg now.</div>
+    </div>
+    <div class="stock-card">
+      <div class="sc-name">Stainless Steel 304</div><div class="sc-meta">Raw Material · SKU-003</div>
+      <div class="sc-bar"><div class="sc-fill" style="width:55%;background:var(--warning)"></div></div>
+      <div class="sc-nums"><span>275 / 500 kg</span><span class="badge bw">Medium</span></div>
+      <div class="sc-ai-tip">🤖 Order within 10 days to stay safe</div>
+    </div>
+    <div class="stock-card">
+      <div class="sc-name">Welding Electrodes 3.15mm</div><div class="sc-meta">Consumable · SKU-004</div>
+      <div class="sc-bar"><div class="sc-fill" style="width:18%;background:var(--danger)"></div></div>
+      <div class="sc-nums"><span>9 / 50 boxes</span><span class="badge bd">Reorder!</span></div>
+      <div class="sc-ai-tip" style="color:var(--danger)">🤖 Critical! Order 30 boxes immediately.</div>
+    </div>
+    <div class="stock-card">
+      <div class="sc-name">Machine Guard Panels</div><div class="sc-meta">Finished Goods · SKU-021</div>
+      <div class="sc-bar"><div class="sc-fill" style="width:80%;background:var(--success)"></div></div>
+      <div class="sc-nums"><span>8 / 10 units</span><span class="badge bs">Good</span></div>
+      <div class="sc-ai-tip">🤖 Sharma Industries might need more — quote them</div>
+    </div>
+    <div class="stock-card">
+      <div class="sc-name">Cutting Discs 4"</div><div class="sc-meta">Consumable · SKU-005</div>
+      <div class="sc-bar"><div class="sc-fill" style="width:40%;background:var(--warning)"></div></div>
+      <div class="sc-nums"><span>20 / 50 pcs</span><span class="badge bw">Medium</span></div>
+      <div class="sc-ai-tip">🤖 Steady consumption, reorder in ~2 weeks</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Stock Movement Log <button class="btn btn-ai btn-sm" onclick="askAI('Looking at my stock movements — HR Sheet IN 200kg on 17 Feb, Welding Electrodes OUT 5 boxes, MS Angle OUT 80kg — what does this consumption pattern tell me? Am I managing inventory efficiently?')">🤖 Analyse Pattern</button></div>
+    <table><thead><tr><th>Item</th><th>Type</th><th>Qty</th><th>Date</th><th>By</th></tr></thead>
+    <tbody>
+      <tr><td>HR Sheet 2mm</td><td><span class="badge bs">IN</span></td><td>200 kg</td><td>17 Feb</td><td>Ramesh</td></tr>
+      <tr><td>Welding Electrodes</td><td><span class="badge bd">OUT</span></td><td>5 boxes</td><td>17 Feb</td><td>Suresh</td></tr>
+      <tr><td>MS Angle 40×40</td><td><span class="badge bd">OUT</span></td><td>80 kg</td><td>16 Feb</td><td>Arjun</td></tr>
+    </tbody></table>
+  </div>
+</div>
+
+<!-- ══════ QUOTATION ══════ -->
+<div class="page" id="page-quot">
+  <div class="page-hdr">
+    <div><div class="page-title">📋 Quotations</div><div class="page-sub">AI-assisted quoting & client proposals</div></div>
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-ghost" onclick="toast('🔗 Link copied!')">🔗 Share</button>
+      <button class="btn btn-primary" onclick="toast('📥 PDF downloaded!')">📥 PDF</button>
+    </div>
+  </div>
+  <div class="g2 mb24">
+    <div class="card">
+      <div class="card-title">Client Details</div>
+      <div style="display:grid;gap:12px;">
+        <div><label style="font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;">CLIENT NAME</label><input type="text" value="Sharma Industries Pvt. Ltd." style="width:100%;padding:10px;background:var(--navy3);border:1px solid rgba(255,255,255,0.08);border-radius:8px;color:var(--text-primary);font-family:'DM Sans';font-size:13px;"></div>
+        <div><label style="font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;">REQUIREMENT</label><input type="text" id="quotReq" value="HS Sheet Machine Guard Panel" style="width:100%;padding:10px;background:var(--navy3);border:1px solid rgba(255,255,255,0.08);border-radius:8px;color:var(--text-primary);font-family:'DM Sans';font-size:13px;"></div>
+        <button class="btn btn-ai" style="width:100%;justify-content:center;" onclick="askAI('I need to write a professional quotation description for: HS Sheet Machine Guard Panel for Sharma Industries. This is a custom fabrication for machine safety guards. Write 2-3 professional lines I can use in the quotation to help the client visualise the product.')">🤖 AI Write Description</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Quote Summary</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;justify-content:space-between;padding:10px;background:var(--navy3);border-radius:8px;"><span style="font-size:13px;color:var(--text-muted)">Subtotal</span><span style="font-weight:600;">₹38,500</span></div>
+        <div style="display:flex;justify-content:space-between;padding:10px;background:var(--navy3);border-radius:8px;"><span style="font-size:13px;color:var(--text-muted)">GST @18%</span><span style="font-weight:600;">₹6,930</span></div>
+        <div style="display:flex;justify-content:space-between;padding:12px;background:rgba(255,107,53,0.1);border:1px solid rgba(255,107,53,0.18);border-radius:8px;"><span style="font-size:14px;font-weight:700;color:var(--saffron)">TOTAL</span><span style="font-size:18px;font-weight:800;color:var(--saffron)">₹45,430</span></div>
+        <button class="btn btn-ai" style="width:100%;justify-content:center;" onclick="askAI('I quoted Sharma Industries ₹45,430 for HS Sheet Machine Guard Panels (4 pieces). The market rate for similar work is around ₹40,000–₹50,000. Is my pricing competitive? Should I offer a discount or hold firm? What negotiation strategy do you suggest?')">🤖 Pricing Strategy</button>
+        <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="toast('✉️ Quotation sent!')">✉️ Send to Client</button>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">📄 Live Preview</div>
+    <div class="quote-preview">
+      <div style="display:flex;justify-content:space-between;margin-bottom:20px;">
+        <div><div class="qp-brand">🏭 Gupta Fabricators</div><div style="font-size:12px;color:#888;margin-top:4px;">GST: 27ABCFG1234H1Z5</div></div>
+        <div class="qp-num"><div style="font-size:18px;font-weight:800;color:#333;">QUOTATION</div><div style="color:#888;font-size:12px;"># QT-2026-0042 · 18 Feb 2026</div></div>
+      </div>
+      <hr class="qp-div">
+      <table class="qp-table"><thead><tr><th>#</th><th>Description</th><th>Dim</th><th>Qty</th><th>Rate</th><th>Amount</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>HS Sheet Panel (IS 2062)</td><td>1200×800×3mm</td><td>4 pcs</td><td>₹4,200</td><td>₹16,800</td></tr>
+        <tr><td>2</td><td>Frame Fabrication (MS Angle)</td><td>40×40×5mm</td><td>4 sets</td><td>₹3,800</td><td>₹15,200</td></tr>
+        <tr><td>3</td><td>Powder Coating (RAL 9006)</td><td>Full surface</td><td>4 pcs</td><td>₹1,000</td><td>₹4,000</td></tr>
+        <tr><td>4</td><td>Hardware</td><td>Standard</td><td>1 set</td><td>₹2,500</td><td>₹2,500</td></tr>
+      </tbody></table>
+      <div class="qp-total">Total (incl. GST): ₹45,430</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ BILLING ══════ -->
+<div class="page" id="page-bill">
+  <div class="page-hdr">
+    <div><div class="page-title">🧾 Billing</div><div class="page-sub">Invoices, collections & AI-powered payment insights</div></div>
+    <button class="btn btn-primary" onclick="toast('🧾 New invoice!')">+ Invoice</button>
+  </div>
+  <div class="kpi-grid">
+    <div class="kpi o"><div class="kpi-lbl">Invoiced (Feb)</div><div class="kpi-val">₹5.6L</div><div class="kpi-ico">📄</div></div>
+    <div class="kpi g"><div class="kpi-lbl">Collected</div><div class="kpi-val">₹4.1L</div><div class="kpi-sub">73% rate</div><div class="kpi-ico">✅</div></div>
+    <div class="kpi b"><div class="kpi-lbl">Outstanding</div><div class="kpi-val">₹1.5L</div><div class="kpi-ico">⏳</div></div>
+    <div class="kpi p"><div class="kpi-lbl">AI Predicted Recovery</div><div class="kpi-val">₹1.1L</div><div class="kpi-sub">by month end</div><div class="kpi-ico">🔮</div></div>
+  </div>
+  <!-- AI Anomaly Detection -->
+  <div class="card mb24">
+    <div class="card-title">🤖 AI Anomaly Alerts <span style="font-size:11px;color:var(--ai-purple);font-style:italic;">Auto-detected patterns</span></div>
+    <div class="anomaly-card">
+      <div class="anomaly-icon">⚠️</div>
+      <div><div class="anomaly-title">Kumar & Sons — Payment Pattern Change</div>
+      <div class="anomaly-desc">Previously paid within 7 days. Now 18 days overdue on ₹21,476.</div>
+      <div class="anomaly-ai">🤖 AI: Possible cash flow issue at their end. Recommended action: Call before escalating. Offer 5-day extension.</div></div>
+      <button class="btn btn-ai btn-sm" style="margin-left:auto;white-space:nowrap;" onclick="askAI('Kumar & Sons is 18 days overdue on ₹21,476. They historically paid in 7 days but have changed behaviour. Draft me a polite but firm WhatsApp follow-up message in Hindi-English (Hinglish) to recover this payment.')">🤖 Draft Message</button>
+    </div>
+    <div class="anomaly-card" style="border-color:rgba(62,207,142,.2);">
+      <div class="anomaly-icon">📈</div>
+      <div><div class="anomaly-title">Patel Engineering — Increasing Order Value</div>
+      <div class="anomaly-desc">3rd consecutive month with 20%+ growth. Current month ₹65,000.</div>
+      <div class="anomaly-ai">🤖 AI: High-value client showing loyalty. Consider offering a volume discount or long-term contract to lock them in.</div></div>
+      <button class="btn btn-ai btn-sm" style="margin-left:auto;white-space:nowrap;" onclick="askAI('Patel Engineering is my fastest growing client — 3 months of 20% growth. How should I approach them with a volume discount or contract offer? What terms should I propose to make it attractive for both sides?')">🤖 Strategy</button>
+    </div>
+  </div>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="swTab(this)">All Invoices</button>
+    <button class="tab-btn" onclick="swTab(this)">Received</button>
+    <button class="tab-btn" onclick="swTab(this)">Pending</button>
+  </div>
+  <div class="card">
+    <table><thead><tr><th>Invoice #</th><th>Client</th><th>Date</th><th>Total</th><th>Status</th><th>Action</th></tr></thead>
+    <tbody>
+      <tr><td style="color:var(--saffron);font-weight:600;">INV-0041</td><td>Sharma Industries</td><td>15 Feb</td><td>₹49,560</td><td><span class="badge bs">Paid</span></td><td><button class="btn btn-ghost btn-sm" onclick="toast('📥 Downloaded!')">PDF</button></td></tr>
+      <tr><td style="color:var(--saffron);font-weight:600;">INV-0042</td><td>Mehta Fabricators</td><td>16 Feb</td><td>₹33,630</td><td><span class="badge bw">Pending</span></td><td><button class="btn btn-ai btn-sm" onclick="askAI('Draft a payment reminder message for Mehta Fabricators for invoice ₹33,630 due on 16 Feb. Keep it professional but friendly.')">🤖 Remind</button></td></tr>
+      <tr><td style="color:var(--saffron);font-weight:600;">INV-0040</td><td>Patel Engineering</td><td>10 Feb</td><td>₹76,700</td><td><span class="badge bs">Paid</span></td><td><button class="btn btn-ghost btn-sm" onclick="toast('📥 Downloaded!')">PDF</button></td></tr>
+      <tr><td style="color:var(--saffron);font-weight:600;">INV-0039</td><td>Kumar & Sons</td><td>1 Feb</td><td>₹21,476</td><td><span class="badge bd">Overdue</span></td><td><button class="btn btn-ai btn-sm" onclick="askAI('Kumar & Sons invoice INV-0039 for ₹21,476 is 18 days overdue. Write a firm but respectful recovery message.')">🤖 Recover</button></td></tr>
+    </tbody></table>
+  </div>
+</div>
+
+<!-- ══════ PRODUCTION ══════ -->
+<div class="page" id="page-prod">
+  <div class="page-hdr">
+    <div><div class="page-title">⚙️ Production Tracker</div><div class="page-sub">Live orders with AI delay prediction</div></div>
+    <button class="btn btn-primary" onclick="toast('✅ Order added!')">+ Order</button>
+  </div>
+  <div class="kpi-grid">
+    <div class="kpi o"><div class="kpi-lbl">Active Orders</div><div class="kpi-val">18</div><div class="kpi-ico">🔧</div></div>
+    <div class="kpi g"><div class="kpi-lbl">Completed (Feb)</div><div class="kpi-val">24</div><div class="kpi-ico">✅</div></div>
+    <div class="kpi b"><div class="kpi-lbl">Delayed</div><div class="kpi-val">2</div><div class="kpi-sub down">Action needed</div><div class="kpi-ico">⚠️</div></div>
+    <div class="kpi p"><div class="kpi-lbl">AI Risk Flagged</div><div class="kpi-val">3 orders</div><div class="kpi-sub">may delay in 5 days</div><div class="kpi-ico">🔮</div></div>
+  </div>
+  <div class="g2">
+    <div>
+      <div class="ord-card">
+        <div class="ord-hdr"><div><div class="ord-id">ORD-1042 · Sharma Industries</div><div class="ord-title">HS Sheet Machine Guard (4 pcs)</div></div><span class="badge bi">In Production</span></div>
+        <div class="prog-wrap"><div class="prog-bar" style="width:65%;background:var(--info)"></div></div>
+        <div class="ord-meta"><span>65% complete</span><span>📅 Due: 28 Feb</span><span>👷 Ramesh</span></div>
+        <div class="ord-ai-risk">🤖 On track — no risk detected</div>
+      </div>
+      <div class="ord-card">
+        <div class="ord-hdr"><div><div class="ord-id">ORD-1041 · Patel Engineering</div><div class="ord-title">MS Structural Frame Assembly</div></div><span class="badge bw">QC Check</span></div>
+        <div class="prog-wrap"><div class="prog-bar" style="width:90%;background:var(--warning)"></div></div>
+        <div class="ord-meta"><span>90% complete</span><span>📅 Due: 22 Feb</span><span>👷 Suresh</span></div>
+        <div class="ord-ai-risk" style="background:rgba(62,207,142,.1);border-color:rgba(62,207,142,.2);color:var(--success);">🤖 Likely on time — 1 day buffer</div>
+      </div>
+      <div class="ord-card">
+        <div class="ord-hdr"><div><div class="ord-id">ORD-1040 · Singh Metals</div><div class="ord-title">Conveyor Frame (12m)</div></div><span class="badge bd">Delayed</span></div>
+        <div class="prog-wrap"><div class="prog-bar" style="width:35%;background:var(--danger)"></div></div>
+        <div class="ord-meta"><span>35% complete</span><span>📅 Was: 18 Feb</span><span>⚠️ Material shortage</span></div>
+        <div class="ord-ai-risk" style="background:rgba(242,107,107,.1);border-color:rgba(242,107,107,.2);color:var(--danger);">🤖 High risk — needs 3 more days. Notify client now.</div>
+        <div style="margin-top:8px;"><button class="btn btn-ai btn-sm" onclick="askAI('Order ORD-1040 for Singh Metals (Conveyor Frame 12m) is delayed by 3 days due to material shortage. Write a professional delay notification message to the client explaining the situation and proposing a revised delivery date of 22 Feb.')">🤖 Draft Client Notice</button></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Stage Pipeline <button class="btn btn-ai btn-sm" onclick="askAI('My production has 5 orders in fabrication, 7 in welding, and 4 in QC stage. What does this bottleneck pattern suggest? How can I improve throughput?')">🤖 Bottleneck</button></div>
+      <canvas id="prodChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ LABOUR ══════ -->
+<div class="page" id="page-labour">
+  <div class="page-hdr">
+    <div><div class="page-title">👷 Labour Management</div><div class="page-sub">Attendance, salary & AI workforce insights</div></div>
+    <button class="btn btn-primary" onclick="toast('✅ Staff added!')">+ Staff</button>
+  </div>
+  <div class="kpi-grid">
+    <div class="kpi o"><div class="kpi-lbl">Total Staff</div><div class="kpi-val">16</div><div class="kpi-ico">👷</div></div>
+    <div class="kpi g"><div class="kpi-lbl">Present Today</div><div class="kpi-val">14</div><div class="kpi-ico">✅</div></div>
+    <div class="kpi b"><div class="kpi-lbl">Monthly Payroll</div><div class="kpi-val">₹1.4L</div><div class="kpi-ico">💳</div></div>
+    <div class="kpi p"><div class="kpi-lbl">AI Productivity Score</div><div class="kpi-val">82/100</div><div class="kpi-sub">↑ 4 pts this month</div><div class="kpi-ico">🔮</div></div>
+  </div>
+  <div class="g2">
+    <div>
+      <div class="emp-card">
+        <div class="emp-av" style="background:linear-gradient(135deg,#FF6B35,#F7C948)">R</div>
+        <div class="emp-inf"><div class="emp-nm">Ramesh Sharma</div><div class="emp-rl">Lead Welder</div></div>
+        <div class="emp-stats">
+          <div class="es"><div class="es-v">26</div><div class="es-l">Present</div></div>
+          <div class="es"><div class="es-v" style="color:var(--warning)">1</div><div class="es-l">Leave</div></div>
+          <div class="es"><div class="es-v" style="color:var(--success)">12h OT</div><div class="es-l">Overtime</div></div>
+        </div>
+        <button class="btn btn-ai btn-sm" style="margin-left:8px;" onclick="askAI('Ramesh Sharma is my Lead Welder — 26 days present, 12 hours overtime this month. He seems highly productive. How should I recognize or reward high performers in an MSME to keep them motivated without overspending?')">🤖</button>
+      </div>
+      <div class="emp-card">
+        <div class="emp-av" style="background:linear-gradient(135deg,#00897B,#4DB6AC)">S</div>
+        <div class="emp-inf"><div class="emp-nm">Suresh Kumar</div><div class="emp-rl">CNC Operator</div></div>
+        <div class="emp-stats">
+          <div class="es"><div class="es-v">24</div><div class="es-l">Present</div></div>
+          <div class="es"><div class="es-v" style="color:var(--warning)">3</div><div class="es-l">Leave</div></div>
+          <div class="es"><div class="es-v" style="color:var(--success)">8h OT</div><div class="es-l">Overtime</div></div>
+        </div>
+      </div>
+      <div class="emp-card">
+        <div class="emp-av" style="background:linear-gradient(135deg,#42A5F5,#7C4DFF)">A</div>
+        <div class="emp-inf"><div class="emp-nm">Arjun Patel</div><div class="emp-rl">Fitter</div></div>
+        <div class="emp-stats">
+          <div class="es"><div class="es-v">27</div><div class="es-l">Present</div></div>
+          <div class="es"><div class="es-v" style="color:var(--warning)">0</div><div class="es-l">Leave</div></div>
+          <div class="es"><div class="es-v" style="color:var(--success)">6h OT</div><div class="es-l">Overtime</div></div>
+        </div>
+      </div>
+      <div class="emp-card">
+        <div class="emp-av" style="background:linear-gradient(135deg,#E85D88,#F7C948)">M</div>
+        <div class="emp-inf"><div class="emp-nm">Mohan Das</div><div class="emp-rl">Helper</div></div>
+        <div class="emp-stats">
+          <div class="es"><div class="es-v">22</div><div class="es-l">Present</div></div>
+          <div class="es"><div class="es-v" style="color:var(--danger)">5</div><div class="es-l">Leave</div></div>
+          <div class="es"><div class="es-v" style="color:var(--text-muted)">0h</div><div class="es-l">Overtime</div></div>
+        </div>
+        <button class="btn btn-ai btn-sm" style="margin-left:8px;" onclick="askAI('Mohan Das (Helper) has been absent 5 days this month — unusually high. He previously had good attendance. What could be the reasons and how should I approach this conversation sensitively as an MSME owner to understand and resolve it?')">🤖</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Salary Split <button class="btn btn-ai btn-sm" onclick="askAI('My monthly payroll is ₹1.4L for 16 staff. Basic ₹1.16L, overtime ₹21K, PF ₹8.4K, ESI ₹4.5K. Is this a healthy labour cost for a metal fabrication MSME doing ₹4.8L monthly revenue? What is the ideal labour cost ratio?')">🤖 Benchmark</button></div>
+      <canvas id="salChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ CASH FLOW ══════ -->
+<div class="page" id="page-cf">
+  <div id="cfContent">
+    <div class="page-hdr">
+      <div><div class="page-title">💸 Cash Flow</div><div class="page-sub">Smart financial tracking with AI forecasting</div></div>
+      <button class="btn btn-ai" onclick="askAI('My opening cash balance is ₹2.8L. This month I expect ₹4.1L inflow and have ₹3.2L in outflows (EMI ₹22K, raw material ₹55K, GST ₹8.4K, salaries ₹1.4L, rent ₹18K + others). Do a full cash flow analysis, identify any risk of cash crunch, and give me a 30-day action plan.')">🤖 Full AI Analysis</button>
+    </div>
+    <div class="kpi-grid">
+      <div class="kpi t"><div class="kpi-lbl">Opening Balance</div><div class="kpi-val">₹2.8L</div><div class="kpi-ico">🏦</div></div>
+      <div class="kpi g"><div class="kpi-lbl">Total Inflow</div><div class="kpi-val">₹4.1L</div><div class="kpi-ico">📈</div></div>
+      <div class="kpi o"><div class="kpi-lbl">Total Outflow</div><div class="kpi-val">₹3.2L</div><div class="kpi-ico">📉</div></div>
+      <div class="kpi p"><div class="kpi-lbl">AI Projected Balance</div><div class="kpi-val">₹3.7L</div><div class="kpi-sub">End of month</div><div class="kpi-ico">🔮</div></div>
+    </div>
+    <div class="cr mb24">
+      <div class="card">
+        <div class="card-title">Weekly Cash Flow <button class="btn btn-ai btn-sm" onclick="askAI('My weekly cash flow shows: Week 1 ₹85K in / ₹70K out, Week 2 ₹1.1L in / ₹88K out, Week 3 ₹95K in / ₹75K out, Week 4 ₹1.2L in / ₹90K out. What is the trend? Any concern about Week 4 outflow spike?')">🤖 Trend</button></div>
+        <canvas id="cfChart"></canvas>
+      </div>
+      <div class="card">
+        <div class="card-title">Expense Breakdown</div>
+        <canvas id="expChart"></canvas>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-title">💰 Upcoming Payables</div>
+        <div class="cf-item"><div class="cf-dot" style="background:var(--danger)"></div><div><div class="cf-lbl">Machinery EMI (HDFC)</div><div class="cf-due">Due: 21 Feb</div></div><div class="cf-amt" style="color:var(--danger)">₹22,000</div></div>
+        <div class="cf-item"><div class="cf-dot" style="background:var(--warning)"></div><div><div class="cf-lbl">Steel Supplier (Mehta Traders)</div><div class="cf-due">Due: 25 Feb</div></div><div class="cf-amt" style="color:var(--warning)">₹55,000</div></div>
+        <div class="cf-item"><div class="cf-dot" style="background:var(--warning)"></div><div><div class="cf-lbl">GST Filing</div><div class="cf-due">Due: 28 Feb</div></div><div class="cf-amt" style="color:var(--warning)">₹8,400</div></div>
+        <div class="cf-item"><div class="cf-dot" style="background:var(--info)"></div><div><div class="cf-lbl">Monthly Salaries</div><div class="cf-due">Due: 1 Mar</div></div><div class="cf-amt" style="color:var(--info)">₹1,40,000</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">📥 Receivables <button class="btn btn-ai btn-sm" onclick="askAI('I am expecting ₹33,630 from Sharma Industries, ₹22,715 advance from Patel Engineering, and ₹21,476 overdue from Kumar & Sons. What collection strategy should I use for each? Which one needs most urgent attention?')">🤖 Collect</button></div>
+        <div class="cf-item"><div class="cf-dot" style="background:var(--success)"></div><div><div class="cf-lbl">Sharma Industries</div><div class="cf-due">Expected: 20 Feb</div></div><div class="cf-amt" style="color:var(--success)">₹33,630</div></div>
+        <div class="cf-item"><div class="cf-dot" style="background:var(--success)"></div><div><div class="cf-lbl">Patel Engineering Advance</div><div class="cf-due">Expected: 22 Feb</div></div><div class="cf-amt" style="color:var(--success)">₹22,715</div></div>
+        <div class="cf-item"><div class="cf-dot" style="background:var(--warning)"></div><div><div class="cf-lbl">Kumar & Sons (Overdue)</div><div class="cf-due">Was: 10 Feb</div></div><div class="cf-amt" style="color:var(--danger)">₹21,476</div></div>
+      </div>
+    </div>
+  </div>
+  <div id="cfDenied" style="display:none;">
+    <div class="access-denied"><div style="font-size:48px;margin-bottom:16px;">🔐</div><h3 style="color:var(--text-secondary)">Access Restricted</h3><p style="font-size:14px;color:var(--text-muted);max-width:300px;margin-top:8px;">Cash Flow is only accessible to the Owner.</p></div>
+  </div>
+</div>
+
+<!-- ══════ AI ADVISOR ══════ -->
+<div class="page" id="page-ai" id="aiPage">
+  <div class="page-hdr">
+    <div><div class="page-title" style="background:linear-gradient(135deg,var(--ai-purple),#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">🤖 AI Business Advisor</div><div class="page-sub">Ask anything about your business — in Hindi or English</div></div>
+  </div>
+
+  <div style="background:linear-gradient(135deg,rgba(167,139,250,0.1),rgba(124,58,237,0.06),rgba(255,107,53,0.05));border:1px solid rgba(167,139,250,0.2);border-radius:var(--radius);padding:28px;margin-bottom:24px;position:relative;overflow:hidden;">
+    <div style="position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:radial-gradient(circle,rgba(167,139,250,0.15),transparent 70%);pointer-events:none;"></div>
+    <div style="font-family:'Sora';font-size:20px;font-weight:700;background:linear-gradient(135deg,var(--ai-purple),#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px;">Your AI-powered Business Intelligence</div>
+    <div style="font-size:13px;color:var(--text-muted);max-width:620px;">Powered by Claude AI. Ask about revenue trends, payment risks, staff performance, pricing strategy, cash crunch warnings — anything about your MSME.</div>
+  </div>
+
+  <div class="quick-insights mb24">
+    <div class="qi-card" onclick="askAIFromCard('Do a complete health check of my MSME business. Look at revenue ₹4.8L, 18 active orders, ₹1.2L pending payments, 3 low-stock items, 14/16 staff present, cash balance ₹2.8L. Give me a business health score out of 10 and top 3 actions I must take this week.')">
+      <div class="qi-icon">🏥</div><div class="qi-title">Business Health Check</div><div class="qi-desc">Get an overall health score & priority actions</div>
+    </div>
+    <div class="qi-card" onclick="askAIFromCard('My revenue is ₹4.8L this month, up 12%. Expenses are ₹3.2L. I have 18 active orders worth approximately ₹8L pipeline. What does my next 3-month revenue look like? What should I do to hit ₹6L monthly revenue?')">
+      <div class="qi-icon">📈</div><div class="qi-title">Revenue Forecast</div><div class="qi-desc">3-month outlook & growth strategy</div>
+    </div>
+    <div class="qi-card" onclick="askAIFromCard('Which of my clients — Sharma Industries, Mehta Fabricators, Patel Engineering, Kumar & Sons, Singh Metals — are most valuable and which are high-risk? Based on payment behaviour and order volume, rank them and suggest how to manage each relationship.')">
+      <div class="qi-icon">🤝</div><div class="qi-title">Client Risk Ranking</div><div class="qi-desc">Who to nurture, who to watch out for</div>
+    </div>
+    <div class="qi-card" onclick="askAIFromCard('I run a metal fabrication MSME with ₹4.8L revenue, ₹1.4L payroll, ₹3.4L inventory value, 16 staff. Am I spending money in the right areas? Where can I cut costs without hurting quality or production?')">
+      <div class="qi-icon">✂️</div><div class="qi-title">Cost Optimisation</div><div class="qi-desc">Where to cut costs smartly</div>
+    </div>
+    <div class="qi-card" onclick="askAIFromCard('My welding electrode stock is at 18%, MS Angle at 24%. I have 18 active production orders. Help me plan what raw materials to buy this week, in what quantities, and in what priority order. My budget for procurement this week is ₹80,000.')">
+      <div class="qi-icon">🛒</div><div class="qi-title">Smart Procurement Plan</div><div class="qi-desc">What to buy, how much, when</div>
+    </div>
+    <div class="qi-card" onclick="askAIFromCard('I want to grow my MSME metal fabrication business. Current revenue ₹4.8L/month. What are 5 practical growth strategies specifically for Indian MSME manufacturers? Consider government schemes like MSME loans, NSIC, GeM portal etc.')">
+      <div class="qi-icon">🚀</div><div class="qi-title">Growth Roadmap</div><div class="qi-desc">5 practical strategies for MSME growth</div>
+    </div>
+  </div>
+
+  <div class="chat-area">
+    <div class="chat-title">💬 Ask Your AI Advisor <span style="font-size:11px;color:var(--text-muted);font-weight:400;">— in Hindi, English, or Hinglish</span></div>
+    <div class="suggested-qs">
+      <div class="sq" onclick="fillQ(this)">Mera business kaisa chal raha hai?</div>
+      <div class="sq" onclick="fillQ(this)">Which client should I focus on this week?</div>
+      <div class="sq" onclick="fillQ(this)">Is mera cash flow safe hai?</div>
+      <div class="sq" onclick="fillQ(this)">How to reduce production delays?</div>
+    </div>
+    <div class="chat-msgs" id="chatMsgs">
+      <div class="msg ai">
+        <div class="msg-avatar">🤖</div>
+        <div class="msg-bubble">Namaste! 🙏 Main aapka <span class="ai-tag">VyaparSetu AI Advisor</span> hoon.<br><br>I have full context of your business — revenue trends, inventory, orders, staff, and cash flow. Ask me anything in <strong>Hindi, English, or Hinglish</strong>.<br><br>Kya aap chahte hain ek <strong>business health check</strong>? Ya koi specific problem hai?</div>
+      </div>
+    </div>
+    <div class="chat-input-row">
+      <input class="chat-input" id="chatIn" placeholder="Ask anything — Hindi ya English mein..." onkeypress="if(event.key==='Enter')sendMsg()">
+      <button class="send-btn" id="sendBtn" onclick="sendMsg()">➤</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+</div><!-- /shell -->
+</div><!-- /app -->
+
+<div class="toast" id="toastEl"><span id="toastMsg">Done!</span></div>
+
+<script>
+// ── STATE ──
+let role = 'owner';
+const roles = {
+  owner:   { name:'Rajesh Gupta', role:'Owner', av:'R', restrict:[] },
+  manager: { name:'Vikram Mehta', role:'Manager', av:'V', restrict:['cf'] },
+  staff:   { name:'Ramesh Sharma', role:'Staff', av:'R', restrict:['cf','quot','bill'] }
+};
+
+// ── LOGIN ──
+function selRole(r, el) {
+  role = r;
+  document.querySelectorAll('.role-card').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  const m = {owner:'owner@vyaparsetu.in', manager:'manager@vyaparsetu.in', staff:'staff@vyaparsetu.in'};
+  document.getElementById('lu').value = m[r];
+}
+function doLogin() {
+  isDemoMode = document.getElementById('demoToggle').checked;
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('demoBanner').style.display = isDemoMode ? 'flex' : 'none';
+  const cfg = roles[role];
+  document.getElementById('sbName').textContent = cfg.name;
+  document.getElementById('sbRole').textContent = cfg.role;
+  document.getElementById('sbAv').textContent = cfg.av;
+  const h = new Date().getHours();
+  const gr = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+  document.getElementById('dashGreet').textContent = `${gr}, ${cfg.name.split(' ')[0]} 👋`;
+  initCharts();
+  const modeMsg = isDemoMode ? '🎬 Demo Mode — AI responses are pre-loaded' : '🚀 Live Mode — Real Claude AI connected';
+  toast(`👋 Welcome, ${cfg.name}! ${modeMsg}`);
+}
+function logout() {
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+}
+
+// ── NAVIGATION ──
+function showPage(id, el) {
+  const cfg = roles[role];
+  if (cfg.restrict.includes(id)) { toast('🔐 Access restricted for your role'); return; }
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  if (el) el.classList.add('active');
+  if (id === 'cf') {
+    const denied = cfg.restrict.includes('cf');
+    document.getElementById('cfContent').style.display = denied ? 'none' : 'block';
+    document.getElementById('cfDenied').style.display = denied ? 'block' : 'none';
+  }
+}
+function swTab(btn) {
+  btn.closest('.tabs').querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// ── CHARTS ──
+let chartsReady = false;
+function initCharts() {
+  if (chartsReady) return; chartsReady = true;
+  Chart.defaults.color = '#5A7A96';
+  Chart.defaults.borderColor = 'rgba(255,255,255,0.04)';
+  const r = (id, cfg) => new Chart(document.getElementById(id), cfg);
+
+  r('revChart', { type:'bar', data:{ labels:['Sep','Oct','Nov','Dec','Jan','Feb'],
+    datasets:[
+      {label:'Revenue',data:[320000,380000,290000,450000,410000,480000],backgroundColor:'rgba(255,107,53,0.72)',borderRadius:6},
+      {label:'Expenses',data:[240000,270000,220000,310000,290000,320000],backgroundColor:'rgba(0,137,123,0.6)',borderRadius:6}
+    ]}, options:{responsive:true,plugins:{legend:{position:'top'}},scales:{y:{ticks:{callback:v=>'₹'+(v/1000)+'K'}}}}});
+
+  r('ordChart', { type:'doughnut', data:{labels:['In Production','QC','Delivered','Delayed'],
+    datasets:[{data:[8,3,5,2],backgroundColor:['#4DA6FF','#F5C542','#3ECF8E','#F26B6B'],borderWidth:0,hoverOffset:6}]},
+    options:{responsive:true,cutout:'68%',plugins:{legend:{position:'bottom'}}}});
+
+  r('prodChart', { type:'bar', data:{labels:['Cutting','Fabrication','Welding','Grinding','QC','Dispatch'],
+    datasets:[{label:'Orders',data:[5,7,4,3,2,1],backgroundColor:'rgba(0,137,123,0.72)',borderRadius:6}]},
+    options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false}}}});
+
+  r('salChart', { type:'pie', data:{labels:['Basic','Overtime','PF','ESI'],
+    datasets:[{data:[116000,21000,8400,4500],backgroundColor:['#FF6B35','#F7C948','#3ECF8E','#4DA6FF'],borderWidth:0}]},
+    options:{responsive:true,plugins:{legend:{position:'bottom'}}}});
+
+  r('cfChart', { type:'line', data:{labels:['Wk1','Wk2','Wk3','Wk4'],
+    datasets:[
+      {label:'Inflow',data:[85000,110000,95000,120000],borderColor:'#3ECF8E',backgroundColor:'rgba(62,207,142,0.1)',tension:.4,fill:true},
+      {label:'Outflow',data:[70000,88000,75000,90000],borderColor:'#FF6B35',backgroundColor:'rgba(255,107,53,0.1)',tension:.4,fill:true}
+    ]}, options:{responsive:true,scales:{y:{ticks:{callback:v=>'₹'+(v/1000)+'K'}}}}});
+
+  r('expChart', { type:'doughnut', data:{labels:['Raw Mat','Salaries','EMI','GST','Rent','Other'],
+    datasets:[{data:[42,32,8,7,6,5],backgroundColor:['#FF6B35','#4DA6FF','#F26B6B','#F5C542','#3ECF8E','#A78BFA'],borderWidth:0}]},
+    options:{responsive:true,cutout:'65%',plugins:{legend:{position:'bottom'}}}});
+}
+
+// ── TOAST ──
+function toast(msg) {
+  const t = document.getElementById('toastEl');
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ── DEMO MODE ENGINE ──
+let isDemoMode = false;
+
+// ── DEMO RESPONSES — 28 unique topics, smart keyword matching ──
+const DEMO_RESPONSES = [
+
+  // 1. BUSINESS HEALTH
+  {
+    keys: ['health check','health score','overall','kitna accha','kaisa chal raha','business kaisa','summary','sab mila'],
+    reply: `**🏥 Business Health Score: 7.4 / 10** — Strong foundation, 2 urgent fixes needed.
+
+**Green Zones ✅**
+• Revenue ₹4.8L with 12% MoM growth — top 15% of metal fabrication MSMEs
+• Cash closing ₹3.7L projected — no crunch this month
+• Staff attendance 87.5% (14/16) — healthy workforce
+• Patel Engineering growing 20%+ for 3 months straight
+
+**Red Zones ⚠️**
+• MS Angle at 24% + Welding Electrodes at 18% — production can halt in 4 days
+• 2 orders delayed — reputation risk with Singh Metals
+• Kumar & Sons ₹21,476 overdue 18 days — cash stuck
+
+**This Week's Priority Actions:**
+1. 🛒 Order raw material TODAY — MS Angle 350kg + Electrodes 30 boxes (₹40K spend)
+2. 📞 Kumar & Sons call — recover ₹21K before 22 Feb
+3. 📩 Proactive message to Singh Metals about revised delivery date
+
+**Verdict:** Aapka business solid hai. Sirf 2 urgent cheezein fix karo — score 8.5+ ho jayega. 💪`
+  },
+
+  // 2. REVENUE FORECAST
+  {
+    keys: ['revenue forecast','next month','3 month','agle mahine','kitna kamaunga','target','6 lakh','projection','future revenue'],
+    reply: `**📈 Revenue Forecast — March to May 2026**
+
+Based on 12% MoM growth trend + active order pipeline:
+
+| Month | Conservative | Optimistic | Key Assumption |
+|---|---|---|---|
+| March 2026 | ₹5.0L | ₹5.4L | Patel order renewal |
+| April 2026 | ₹5.3L | ₹5.9L | 1 new client added |
+| May 2026 | ₹5.7L | ₹6.3L | GeM portal order |
+
+**To hit ₹6L by May — 3 levers:**
+
+**Lever 1 — Patel Engineering contract (highest impact)**
+They're at ₹65K/month and growing. Offer 4% discount for 6-month advance commitment. Locks ₹3.6L guaranteed revenue.
+
+**Lever 2 — Convert Singh Metals delay into loyalty**
+Proactive communication + on-time delivery going forward = upsell opportunity. Singh has capacity for ₹80-90K/month orders.
+
+**Lever 3 — 1 New Client in March**
+Visit 2 nearby MSME clusters. Even 1 new client at ₹45K/month = ₹5.4L target crossed.
+
+**Bottom line:** ₹6L is 90 days away. Aap sahi direction mein hain. 🚀`
+  },
+
+  // 3. PROFIT MARGIN
+  {
+    keys: ['profit','margin','net','kitna bacha','kya bach raha','earnings','how much profit','munafa','income'],
+    reply: `**💰 Profit & Margin Analysis — February 2026**
+
+**Revenue Breakdown:**
+\`\`\`
+Total Revenue:          ₹4,80,000  (100%)
+Raw Material Cost:     -₹1,20,000  (25%)
+Labour (Payroll):      -₹1,40,000  (29%)
+Overhead (EMI+Rent):   -₹  40,000   (8%)
+GST & Compliance:      -₹   8,400   (2%)
+──────────────────────────────────────
+Gross Profit:           ₹1,71,600  (36%)
+Operating Expenses:    -₹  50,000  (10%)
+──────────────────────────────────────
+Net Profit:             ₹1,21,600  (25%)
+\`\`\`
+
+**25% net margin is EXCELLENT** for a metal fabrication MSME. Industry average is 12-18%.
+
+**Where your margin is strongest:**
+• Machine Guard Panels for Sharma Industries — ~38% margin (premium product)
+• Structural frames — ~28% margin
+
+**Where it's thinnest:**
+• Conveyor Frame for Singh Metals — ~18% (labour intensive, delayed = more cost)
+
+**To improve margin to 30%+:**
+1. Negotiate bulk raw material discount with suppliers (target 8%)
+2. Reduce overtime by 30% through better scheduling (saves ₹6K/month)
+3. Increase Machine Guard Panel orders — it's your highest margin product 🎯`
+  },
+
+  // 4. CASH FLOW ANALYSIS
+  {
+    keys: ['cash flow','cash crunch','paise','balance','paisa','liquidity','fund','cash position','broke','paisa kam'],
+    reply: `**💸 Cash Flow Deep Dive — February 2026**
+
+**Current Snapshot:**
+| | Amount |
+|---|---|
+| Opening Balance | ₹2,80,000 |
+| Expected Inflow | ₹4,10,000 |
+| Committed Outflow | ₹3,20,000 |
+| **Projected Closing** | **₹3,70,000 ✅** |
+
+**Week-by-Week Risk Map:**
+• **Week 3 (18-22 Feb):** ⚠️ Tightest week — EMI ₹22K + material purchase ₹40K due
+• **Week 4 (23-28 Feb):** ✅ Recovery — Sharma ₹33K + Patel ₹22K expected inflow
+• **1 March:** 💰 Salary day ₹1.4L — fully funded from Week 4 inflow
+
+**Hidden Risk:**
+If Kumar & Sons ₹21,476 doesn't arrive → Week 3 dips to ₹2.38L. Still safe, but uncomfortable. Follow up immediately.
+
+**30-Day Cash Optimization Plan:**
+1. Collect Kumar by 20 Feb — call today
+2. Delay raw material order to 21 Feb (after Sharma payment arrives on 20th)
+3. Ask Patel Engineering for 30% advance on next order — they're a trusted client
+
+**Verdict: Zero cash crunch risk this month.** But Kumar & Sons is the single variable to watch. 📊`
+  },
+
+  // 5. INVENTORY / STOCK
+  {
+    keys: ['inventory','stock','maal','saman','items','material level','kya kam hai','low stock','reorder point'],
+    reply: `**📦 Inventory Intelligence Report**
+
+**Current Stock Status:**
+| Item | Level | Days Left | Action |
+|---|---|---|---|
+| HR Sheet 2mm | 72% — 720kg | ~21 days | ✅ Comfortable |
+| MS Angle 40×40 | 24% — 120kg | ⚠️ ~4 days | 🔴 ORDER NOW |
+| Stainless Steel 304 | 55% — 275kg | ~14 days | 🟡 Order in 7 days |
+| Welding Electrodes | 18% — 9 boxes | ⚠️ ~3 days | 🔴 ORDER NOW |
+| Machine Guard Panels | 80% — 8 units | Finished goods | ✅ Good |
+| Cutting Discs 4" | 40% — 20 pcs | ~10 days | 🟡 Order in 5 days |
+
+**Financial Impact:**
+Total stock value: ₹3.4L — well maintained.
+If MS Angle runs out: 5 active production orders halt = ₹85K revenue at risk.
+
+**AI Reorder Recommendation:**
+- TODAY: Order MS Angle 350kg (₹28K) + Electrodes 30 boxes (₹12K)
+- By 24 Feb: Stainless Steel 100kg (₹22K) + Cutting Discs 30 pcs (₹6K)
+- Total procurement this week: ₹68K (within healthy cash position)
+
+**Tip:** Negotiate 3-month bulk deal with your MS Angle supplier. At 1000kg/month, you qualify for 8-10% discount = ₹2,800 savings/month. 💡`
+  },
+
+  // 6. PROCUREMENT PLAN
+  {
+    keys: ['procure','purchase','buy','khareedna','order karna','supplier','what to buy','kitna khareedun','material order'],
+    reply: `**🛒 Smart Procurement Plan — This Week**
+
+**Budget Available: ₹80,000**
+
+**Priority 1 — URGENT (Order Today):**
+| Item | Supplier | Qty | Est. Cost |
+|---|---|---|---|
+| MS Angle 40×40mm | Mehta Traders | 350 kg | ₹28,000 |
+| Welding Electrodes 3.15mm | Shree Welding | 30 boxes | ₹12,000 |
+| **Subtotal** | | | **₹40,000** |
+
+**Priority 2 — This Week (Before 25 Feb):**
+| Item | Qty | Est. Cost |
+|---|---|---|
+| Stainless Steel 304 | 100 kg | ₹22,000 |
+| Cutting Discs 4" | 30 pcs | ₹6,000 |
+| **Subtotal** | | **₹28,000** |
+
+**Total: ₹68,000** | Remaining buffer: ₹12,000 ✅
+
+**Negotiation Tips:**
+- Tell Mehta Traders you're buying ₹40K+ this month → ask for 5% discount = saves ₹1,400
+- Shree Welding — if you buy 50 boxes, price drops ₹200/box = ₹10,000 savings
+
+**Delivery sequence:** Get MS Angle first (production is blocked). Electrodes can wait 24 hours. 🚚`
+  },
+
+  // 7. CLIENT ANALYSIS
+  {
+    keys: ['client','customer','kaun sa client','best client','worst client','rank client','client analysis','relation','rishta'],
+    reply: `**🤝 Full Client Intelligence Report**
+
+**Client Ranking by Value + Risk:**
+
+**⭐ Tier 1 — Grow These (Priority Clients)**
+
+🟢 **Patel Engineering** — Score: 9.2/10
+• ₹65K/month, 20%+ growth for 3 months, pays on time
+• Action: Offer 4% loyalty discount for 6-month contract. Lock them in now.
+
+🟢 **Sharma Industries** — Score: 8.5/10
+• ₹42K/month, always pays within 7 days, stable orders
+• Action: Upsell Machine Guard Panels — they're a fit. Quote proactively.
+
+**🟡 Tier 2 — Manage Actively**
+
+🟡 **Singh Metals** — Score: 6.8/10
+• Large order potential but current Conveyor Frame delay is a trust risk
+• Action: Send proactive delay notice today. Offer ₹2,000 discount on next order as goodwill.
+
+🟡 **Mehta Fabricators** — Score: 6.5/10
+• ₹28.5K pending, moderate order size, payment slightly slow
+• Action: Follow up politely this week. Check if they have upcoming project requirements.
+
+**🔴 Tier 3 — Watch Carefully**
+
+🔴 **Kumar & Sons** — Score: 4.1/10
+• ₹21,476 overdue 18 days — pattern change from their usual 7-day payment
+• Action: Call today, offer 5-day extension but ask for 50% NOW.
+
+**Key Insight:** 2 clients (Patel + Sharma) = 56% of your revenue. Protect these relationships above everything else. 🎯`
+  },
+
+  // 8. PAYMENT RECOVERY - KUMAR
+  {
+    keys: ['kumar','overdue','payment recovery','paisa wapas','recover payment','follow up kaise','collection','baaki','udhar'],
+    reply: `**📱 Payment Recovery — Kumar & Sons**
+
+**Situation:** ₹21,476 overdue for 18 days. Previously paid in 7 days — behaviour changed.
+
+**Step 1 — WhatsApp Message (Send Now):**
+
+---
+*Namaskar Kumar ji 🙏*
+
+*Umeed hai aap aur aapka parivar theek hai.*
+
+*Invoice INV-0039 ke baare mein poochna tha — ₹21,476 ka payment 10 Feb se pending hai. Aapka purana record bahut strong raha hai, isliye directly contact kar raha hoon.*
+
+*Kya aaj ya kal tak arrange ho sakta hai? Agar temporarily koi pareshani hai toh batayein — kuch solution nikal sakte hain.*
+
+*Dhanyavaad 🙏*
+*Rajesh Gupta | Gupta Fabricators | [Phone]*
+
+---
+
+**Step 2 — If No Response in 48 Hours:**
+Call directly: *"Kumar ji, bas ek minute — payment confirm karna tha, agle order ki planning kar raha hoon."*
+
+**Step 3 — If Still No Response:**
+Send physical invoice copy + polite letter via courier. This signals seriousness without conflict.
+
+**Psychology Tip:** 85% of overdue payments are recovered with the first polite call. Aggressive tone damages the relationship — be firm but warm. 
+
+**Never do this as first step:** Legal notice, public embarrassment, or harsh language. 🙏`
+  },
+
+  // 9. DELAY MANAGEMENT
+  {
+    keys: ['delay','late delivery','deadline miss','order delay','client ko batao','extension','singh metals','conveyor'],
+    reply: `**📩 Production Delay — Management Guide**
+
+**Current Delayed Orders:**
+- ORD-1040 (Singh Metals — Conveyor Frame 12m): 3 days behind, material shortage reason
+- ORD-1041 (Patel Engineering — Frame Assembly): On track, minor QC buffer
+
+**Client Communication Template — Singh Metals:**
+
+---
+*Dear Mr. Singh,*
+
+*Warm greetings from Gupta Fabricators.*
+
+*I am writing proactively regarding Order ORD-1040 (Conveyor Frame 12m). Due to a supply delay in MS Angle material (now resolved — fresh stock arriving tomorrow), we anticipate completing your order by 22nd February instead of the original 18th.*
+
+*We sincerely apologise for this inconvenience. To make up for the delay, we are offering complimentary powder coating touch-up on delivery.*
+
+*Our team is working on priority. Please feel free to call me directly at any time.*
+
+*Regards,*
+*Rajesh Gupta | +91-XXXXXXXXXX*
+
+---
+
+**Why proactive communication is powerful:**
+Clients forgive delays — they never forgive being surprised. Calling BEFORE they call you:
+✅ Preserves trust
+✅ Shows professionalism
+✅ Keeps future orders coming
+
+**Post-delivery:** Ask Singh Metals for a Google review. Handling delays well often generates MORE loyalty than perfect delivery. 💡`
+  },
+
+  // 10. GST & TAX
+  {
+    keys: ['gst','tax','return','filing','taxation','27abcfg','itc','input credit','invoice','compliance','tds'],
+    reply: `**📋 GST & Tax Intelligence for Gupta Fabricators**
+
+**Your GST Profile:**
+• GSTIN: 27ABCFG1234H1Z5 (Maharashtra)
+• SAC/HSN: Fabricated metal products — HSN 7308
+• GST Rate on your products: **18%**
+• Current month GST liability: ~₹8,400
+
+**Input Tax Credit (ITC) Opportunity:**
+Every purchase you make from GST-registered suppliers gives you ITC. This directly reduces your GST payment.
+
+Example this month:
+| Purchase | GST Paid | ITC Claimable |
+|---|---|---|
+| MS Angle from Mehta Traders | ₹5,040 | ✅ ₹5,040 |
+| Welding Electrodes | ₹2,160 | ✅ ₹2,160 |
+| **Total ITC this month** | | **₹7,200** |
+
+Your GST outflow: ₹8,400 - ₹7,200 = **Just ₹1,200 net payment!**
+
+**Key Compliance Dates:**
+• GSTR-1 (Sales): 11th of every month
+• GSTR-3B (Payment): 20th of every month
+• Annual Return (GSTR-9): December 31st
+
+**Action:** Make sure ALL your suppliers are GST-registered. Buying from unregistered suppliers = you lose ITC = extra cost. 
+
+**Pro tip:** Ask your CA to do an ITC reconciliation monthly. MSMEs often miss claiming ₹15-30K of ITC annually. 💡`
+  },
+
+  // 11. STAFF & HR
+  {
+    keys: ['staff','employee','labour','worker','ramesh','suresh','arjun','mohan','manpower','hire','firing','resign','attrition'],
+    reply: `**👷 Workforce Intelligence — Full Report**
+
+**Team Scorecard (February 2026):**
+| Name | Role | Present | Leaves | OT Hours | Performance |
+|---|---|---|---|---|---|
+| Ramesh Sharma | Lead Welder | 26/27 | 1 | 12h | ⭐ Excellent |
+| Suresh Kumar | CNC Operator | 24/27 | 3 | 8h | ✅ Good |
+| Arjun Patel | Fitter | 27/27 | 0 | 6h | ⭐ Star |
+| Mohan Das | Helper | 22/27 | 5 | 0h | ⚠️ Watch |
+
+**Immediate Actions:**
+
+🌟 **Retain your stars — Ramesh & Arjun:**
+A skilled welder replacement costs ₹20-30K in recruitment + 3 months productivity loss. A ₹1,000 monthly bonus or public praise costs almost nothing vs the retention value.
+
+⚠️ **Address Mohan Das's absences:**
+5 leaves in one month suggests a personal issue. Don't penalise — have a private conversation. Offer flexible timing for 2 weeks. Most attendance problems are family-related and resolve quickly with empathy.
+
+**Overtime Insight:**
+₹21,000 OT spend this month. By staggering shift start times by 30 minutes, you can reduce OT by ₹6-8K/month with the same output.
+
+**Next Hire Recommendation:**
+When revenue crosses ₹6L, hire one multi-skilled fitter-welder. At ₹18K salary, ROI is 4x within 60 days. 🎯`
+  },
+
+  // 12. PRICING STRATEGY
+  {
+    keys: ['price','pricing','quote','rate','kitna charge','competitive','margin on product','charge karna','quotation strategy','discount'],
+    reply: `**💲 Pricing Strategy Intelligence**
+
+**Your Current Pricing vs Market:**
+| Product | Your Rate | Market Range | Position |
+|---|---|---|---|
+| HS Sheet Machine Guard | ₹9,607/pc | ₹8,500-11,000 | ✅ Competitive |
+| MS Structural Frame | ₹38,500/set | ₹35,000-45,000 | ✅ Mid-market |
+| Conveyor Frame (12m) | Custom | ₹80-120K | 🟡 Price check needed |
+
+**When to discount — and when NOT to:**
+
+✅ **Offer discount when:**
+- Client commits to 3+ months of work (max 5%)
+- New client first order to build relationship (max 8%, one-time)
+- Delayed delivery compensation (max ₹2,000 flat, not % discount)
+
+❌ **Never discount when:**
+- Client is already your largest buyer (they expect it every time)
+- Emergency order with tight deadline (charge 10-15% premium instead)
+- You're the only fabricator who can do the job in time
+
+**Negotiation Script:**
+When a client asks "can you do it cheaper?"
+→ *"Ji zaroor — agar aap 3 mahine ka order de dein toh hum 4% loyalty discount de sakte hain. Ek order pe rate same rahega."*
+
+This converts price pressure into a long-term commitment. 🎯
+
+**Price Increase Strategy:**
+You haven't raised prices in how long? A 5-7% annual price increase is standard and expected. Frame it as "raw material cost adjustment." Most loyal clients accept it. 📈`
+  },
+
+  // 13. PRODUCTION EFFICIENCY
+  {
+    keys: ['production','efficiency','output','throughput','bottleneck','slow','fast','process','improve production','manufacturing'],
+    reply: `**⚙️ Production Efficiency Analysis**
+
+**Current Pipeline Status:**
+| Stage | Orders | Avg Time | Bottleneck? |
+|---|---|---|---|
+| Cutting | 5 orders | 4 hours | ✅ Normal |
+| Fabrication | 7 orders | 2 days | ⚠️ Slightly crowded |
+| Welding | 4 orders | 1.5 days | ✅ Normal |
+| Grinding/Finishing | 3 orders | 6 hours | ✅ Normal |
+| QC | 2 orders | 4 hours | ✅ Normal |
+| Dispatch | 1 order | Same day | ✅ Normal |
+
+**Key Finding:** Fabrication stage has 7 orders — that's your bottleneck. Consider:
+1. Split large fabrication orders into parallel workstreams
+2. Assign Arjun (Fitter) to support Fabrication — he's your most available skilled worker
+
+**5 Quick Wins for Production Efficiency:**
+
+1. **Morning standup (15 min)** — Daily priorities set = fewer mid-day confusions. Saves 45 min/day.
+2. **Material staging** — Pre-stage next order's material while current order is in QC.
+3. **QC checklist** — Standardise QC steps so any worker can check, not just senior staff.
+4. **Order sequencing** — Batch similar materials together. Reduces changeover time by 20-25%.
+5. **Overtime reduction** — The 20h OT this month suggests poor daytime scheduling, not workload. Better scheduling = same output, 30% less OT spend.
+
+**Target:** Reduce average order completion time from 6 days to 4.5 days. At current order volume, that's 3-4 extra orders per month = ₹40-60K additional revenue. 🚀`
+  },
+
+  // 14. SALARY / PAYROLL
+  {
+    keys: ['salary','payroll','tenkha','wages','pf','esic','epf','increment','bonus','pay','compensation'],
+    reply: `**💳 Payroll Intelligence Report**
+
+**February 2026 Payroll Breakdown:**
+| Component | Amount | % of Revenue |
+|---|---|---|
+| Basic Wages (16 staff) | ₹1,16,000 | 24.2% |
+| Overtime Pay | ₹21,000 | 4.4% |
+| PF Contribution (8.33%) | ₹8,400 | 1.75% |
+| ESI Contribution (3.25%) | ₹4,500 | 0.94% |
+| **Total Labour Cost** | **₹1,49,900** | **31.2%** |
+
+**Industry Benchmark:** Metal fabrication MSME should keep labour at 28-35% of revenue. You're at 31.2% — within healthy range. ✅
+
+**Compliance Checklist:**
+- ✅ PF filed before 15th of month
+- ✅ ESI filed before 15th of month
+- ⚠️ Ensure all workers have UAN numbers — important for PF withdrawal if they leave
+- ⚠️ Maintain Form 16 for workers earning >₹2.5L/year
+
+**Increment Strategy (for 2026):**
+| Performance | Recommended Increment |
+|---|---|
+| Star (Ramesh, Arjun) | 10-12% + one-time bonus ₹2,000 |
+| Good (Suresh) | 7-8% |
+| Watch (Mohan Das) | Hold increment, review in 60 days |
+
+**Cost Saving Tip:** ₹21K overtime this month = high. With proper shift planning and material readiness, target 40% OT reduction = saves ₹8,400/month = ₹1,00,800/year. 💡`
+  },
+
+  // 15. WORKING CAPITAL / LOAN
+  {
+    keys: ['loan','working capital','bank','borrow','credit','mudra','cgtmse','finance','fund','capital','interest','emi'],
+    reply: `**🏦 Working Capital & Loan Options**
+
+**Your Current Loan Eligibility Profile:**
+Based on ₹4.8L/month revenue + GST history + MSME registration:
+
+| Scheme | Amount | Interest | Collateral | Best For |
+|---|---|---|---|---|
+| **PM Mudra — Kishor** | ₹50K–₹5L | 10-12% | None | Immediate working capital |
+| **CGTMSE** | Up to ₹2 Cr | 10-14% | None ✅ | Equipment/expansion |
+| **SIDBI MSME Loan** | ₹10L–₹1Cr | 8-10% | Minimal | Growth phase |
+| **CC Limit (Bank)** | 20-25% of turnover | 12-14% | Stock + debtors | Day-to-day working capital |
+
+**Best Option for You Right Now:**
+A **Cash Credit (CC) Limit** from your bank — this is the most flexible:
+- Draw money only when needed, pay interest only on what you use
+- Based on your ₹4.8L revenue, you qualify for ₹1-1.2L CC limit
+- Use it to bridge the gap between raw material purchase and client payment collection
+
+**Steps to Apply:**
+1. Go to your current bank (where your current account is)
+2. Ask for "CC limit against stock and debtors"
+3. Documents needed: 6 months bank statement + ITR + GST returns + Udyam certificate
+4. Approval in 7-15 working days
+
+**Important:** With Kumar & Sons paying consistently, your receivables record is strong — this improves your CC eligibility. Collect that ₹21K first! 🏦`
+  },
+
+  // 16. MARKETING / NEW CLIENTS
+  {
+    keys: ['marketing','new client','promote','advertise','dhundna','social media','linkedin','referral','prospect','lead','network'],
+    reply: `**📣 Marketing Strategy for Gupta Fabricators**
+
+**Truth first:** For a B2B metal fabrication MSME, digital ads and social media are NOT your best ROI. Here's what actually works:
+
+**Channel 1 — Referrals (Best ROI, ₹0 cost)**
+Your 5 existing clients each know 10-15 other MSME owners.
+→ Tell Sharma Industries and Patel Engineering: *"Hum ek naya client le rahe hain — koi recommendation hai?"*
+→ Offer 2% commission on any referred client's first order
+
+**Channel 2 — Industrial Associations (₹5-10K/year)**
+Join your local CII / FICCI MSME chapter or trade association.
+→ Monthly meetings = 20-30 MSME owners who need fabrication work
+→ One new client from here = ₹40-60K revenue
+
+**Channel 3 — GeM Portal (₹0 cost)**
+Government offices buy fabricated goods directly at gem.gov.in
+→ Registration is free, takes 2 hours
+→ Even 1 GeM order can be ₹1-3L
+→ Government pays within 30 days — better than private clients!
+
+**Channel 4 — WhatsApp Business Profile (₹0 cost)**
+Create a professional WA Business account:
+• Display your work photos
+• List products with prices
+• Share your Catalogue with existing clients — they share with their network naturally
+
+**Channel 5 — NSIC Registration**
+Tender participation without EMD (security deposit). Access to government tenders worth crores. Free with your MSME registration.
+
+**Monthly Marketing Budget Recommendation:** ₹5,000 → Spent on association membership + 2 site visits. ROI = 10-20x. 🎯`
+  },
+
+  // 17. COMPETITION
+  {
+    keys: ['competition','competitor','dusra','market','industry','who else','other fabricator','threat','competi'],
+    reply: `**🏆 Competitive Intelligence Report**
+
+**Your Market Position:**
+In metal fabrication MSME space (Tier 2-3 cities), you're competing in a fragmented market — mostly unorganized players.
+
+**Typical Competitors in Your Segment:**
+| Competitor Type | Their Strength | Your Advantage |
+|---|---|---|
+| Larger fabricators (50+ workers) | Volume capacity | Faster turnaround, more personal service |
+| Cheaper job shops | Low price | Quality, reliability, GST billing |
+| Out-of-town suppliers | Existing relationships | Local = faster delivery + no freight |
+
+**Where You Win Every Time:**
+✅ GST-compliant billing (many small competitors can't offer this)
+✅ Quality consistency (IS 2062 grade material + proper QC)
+✅ Responsive communication (your clients value this)
+✅ AI-powered business management (coming soon with VyaparSetu!)
+
+**Where Competitors Beat You:**
+⚠️ Price — unregistered shops are 10-15% cheaper (no tax, informal labour)
+⚠️ Capacity — for very large orders, bigger players win
+
+**Strategy to Stay Ahead:**
+1. Never compete on price with unorganized shops — compete on reliability
+2. Build relationships with clients who VALUE GST invoices (exporters, corporates, government buyers — they NEED GST compliance)
+3. Focus on repeat business — your 5 current clients = gold. New clients cost 5x more to acquire.
+
+**Moat Building:** Your best competitive protection is having 3-4 clients locked on 6-month contracts. Once locked, competitors can't touch them. 🛡️`
+  },
+
+  // 18. GOVERNMENT SCHEMES
+  {
+    keys: ['scheme','government','yojana','subsidy','grant','udyam','dpiit','startup india','free money','support','benefit'],
+    reply: `**🏛️ Government Schemes Available to You**
+
+**Schemes You Can Apply to RIGHT NOW:**
+
+**1. CGTMSE — Collateral-Free Loan** ⭐ Priority
+• Up to ₹2 Crore loan, no property pledge needed
+• Government guarantees your loan to the bank
+• Apply through your bank + Udyam certificate
+
+**2. PM Mudra Yojana — Kishor Category**
+• ₹50,000 to ₹5 Lakh at low interest
+• For working capital — raw material purchase, equipment upgrade
+• Apply at any nationalized bank
+
+**3. MSME Technology Upgradation Fund (CLCS-TUS)**
+• 15-25% capital subsidy on new machinery
+• If you buy a new CNC machine or welding equipment, government pays 15-25% of the cost!
+• Apply through your District Industries Centre (DIC)
+
+**4. ZED Certification (Zero Defect Zero Effect)**
+• Quality certification that increases client confidence
+• Subsidized for MSMEs — only ₹30,000 for small enterprises
+• Helps win larger corporate and government contracts
+
+**5. GeM Portal (Government e-Marketplace)**
+• Sell directly to government offices and PSUs
+• No middlemen, guaranteed payment within 30 days
+• Register free at gem.gov.in — takes 2 hours
+
+**6. NSIC Registration**
+• Participate in government tenders without security deposit
+• Access to raw material assistance and marketing support
+• Free with your Udyam certificate
+
+**First Step Today:** Register on Udyam portal (udyamregistration.gov.in) if not done. It takes 20 minutes and is completely free. This is the master key that unlocks all other schemes. 🔑`
+  },
+
+  // 19. EXPORT / NEW MARKETS
+  {
+    keys: ['export','foreign','international','new market','city','expand location','dusra sheher','abroad','overseas','global'],
+    reply: `**🌍 Market Expansion Strategy**
+
+**Phase 1 — Maximize Current City (Right Now)**
+Before expanding, maximize depth in your existing market:
+- You have 5 clients but your city likely has 200+ MSME manufacturers
+- Target: Double client count to 10 in next 6 months
+- Revenue potential at 10 clients: ₹8-10L/month
+
+**Phase 2 — Nearby Industrial Clusters (Month 7-12)**
+Identify industrial areas within 50-100km radius:
+- MIDC/GIDC/SIDCO estates near you have 100s of potential buyers
+- Hire 1 sales person at ₹20K salary, cover these clusters
+- 1 visit/day = 20 prospects/month = 2-3 new clients
+
+**Phase 3 — Government (GeM) — National Market (Month 3+)**
+- GeM portal gives you access to ALL of India's government buyers
+- No geographic limit — a Delhi government office can order from you
+- Freight cost is passed to buyer in most cases
+- This is the fastest way to "go national" for an MSME
+
+**Phase 4 — Export (Year 2-3)**
+Metal fabricated products DO get exported from India:
+- Target: Bangladesh, Nepal, Sri Lanka, East Africa
+- FIEO (Federation of Indian Export Organisations) provides free export training
+- ECGC insurance protects you against foreign payment defaults
+
+**Honest advice:** Export before solidifying domestic base = risky. Focus on ₹10L/month domestic first, then export. One step at a time. 🎯`
+  },
+
+  // 20. DIGITAL PAYMENTS
+  {
+    keys: ['payment','upi','digital','online payment','razorpay','collect','receive','neft','rtgs','payment link','qr code'],
+    reply: `**📲 Digital Payment Setup for Your Business**
+
+**Current Gap:** You're manually tracking payments from 5+ clients. Let's fix that.
+
+**Step 1 — Business UPI QR Code (₹0, Do Today)**
+- Your bank's business account has a UPI QR option
+- Print it on all invoices + paste at your factory entrance
+- Clients scan and pay instantly — no follow-up needed for small amounts
+
+**Step 2 — Payment Links (₹0)**
+- WhatsApp a payment link to Kumar & Sons right now
+- Use Razorpay (razorpay.com) or PayU — free setup for small businesses
+- Client clicks, pays by UPI/card/netbanking in 30 seconds
+- You get instant notification + auto-reconciliation
+
+**Step 3 — Invoice with Payment Terms (Reduces Overdues)**
+Every invoice must clearly state:
+- Payment Due: [Date]
+- Bank: [Name], A/C: [No], IFSC: [Code]
+- UPI: [ID]
+- Late payment: 2% per month (even if you don't enforce it, it creates urgency)
+
+**Step 4 — Auto Payment Reminder (₹0)**
+Use WhatsApp Business auto-reply or set calendar reminders:
+- Day 0: Invoice sent
+- Day 7: "Just checking if invoice received?" (casual)
+- Day 14: "Payment reminder" (formal)
+- Day 21: Call directly
+
+**Impact:** Businesses with digital payment options get paid 40% faster than those relying on NEFT. Kumar & Sons situation becomes rarer. 💳`
+  },
+
+  // 21. QUALITY IMPROVEMENT
+  {
+    keys: ['quality','defect','reject','rework','complaint','client complain','qc','inspection','standard','iso','improve quality'],
+    reply: `**🔍 Quality Management Intelligence**
+
+**Current Quality Metrics (Estimated from Data):**
+• Rework rate: ~5-8% (industry average for unorganized MSME: 12-15%) — you're actually ABOVE average!
+• Client complaints this month: 1 (Singh Metals delay — delivery, not quality related)
+• QC stage: 2 orders currently in check ✅
+
+**5-Step Quality Improvement Plan (₹0 to implement):**
+
+**1. Pre-Production Checklist (Implement Tomorrow)**
+Before cutting any material, verify:
+✅ Drawing/specification confirmed with client
+✅ Correct material grade picked
+✅ Machine calibrated
+→ Prevents 60% of rework
+
+**2. In-Process Checks (Every Stage)**
+Fabrication → Welding → Grinding: Each worker signs off before passing to next stage. Creates accountability without extra supervision.
+
+**3. First Article Inspection (for new products)**
+Before starting full production of a new order, make 1 piece, show client for approval, THEN produce rest.
+→ Eliminates misunderstanding rejections 100%
+
+**4. Non-Conformance Log**
+Simple notebook: Date | Product | Defect | Root Cause | Action
+→ After 3 months, you'll see patterns and fix root causes permanently
+
+**5. ZED Certification**
+Zero Defect Zero Effect certification from MSME Ministry:
+• Subsidized cost for MSMEs
+• Improves client trust dramatically
+• Required for some government tenders
+
+**ROI of Quality:** Reducing rework from 7% to 3% on ₹4.8L revenue = ₹19,200 saved per month. That's ₹2.3L per year from just better quality control. 💰`
+  },
+
+  // 22. INSURANCE
+  {
+    keys: ['insurance','bima','fire','theft','accident','cover','protect','risk','property insurance','worker insurance'],
+    reply: `**🛡️ Business Insurance — What You Need**
+
+**Harsh Reality:** Most Indian MSMEs are dangerously underinsured. One fire, theft, or worker accident can wipe out years of savings.
+
+**Essential Policies for Gupta Fabricators:**
+
+**1. Factory/Business Package Policy** ⭐ Priority
+• Covers: Fire, flood, theft, machinery breakdown, stock damage
+• For a factory with ₹3.4L stock + equipment worth ₹15-20L
+• Cost: ₹8,000-15,000/year
+• Get from: New India Assurance, National Insurance, or Oriental Insurance
+
+**2. Workmen's Compensation Policy**
+• Covers: Worker injury or death while on duty
+• MANDATORY under Workmen's Compensation Act for factories
+• For 16 workers: ₹5,000-8,000/year
+• Without this, you personally pay medical + compensation = potentially ₹5-20L per accident
+
+**3. Group Medical Insurance (Optional but Recommended)**
+• For your 5 best employees (Ramesh, Suresh, Arjun + 2 others)
+• Cost: ₹800-1,200 per person per year
+• Benefit: Massive retention tool — most MSME workers don't get medical benefits
+
+**4. Machinery Breakdown Insurance**
+• Your CNC machine going down = production halt = revenue loss
+• Covers repair costs + consequential loss
+• Cost: 0.5-1% of machine value per year
+
+**Total Annual Premium Estimate:** ₹20,000-30,000
+**Protection Value:** ₹30-50 Lakh
+
+**Tip:** Contact your bank — many offer bundled business insurance at discounted rates to their current account holders. 🏦`
+  },
+
+  // 23. MONTHLY PLANNING
+  {
+    keys: ['plan','planning','next month','march','agle mahine','monthly','priorities','what to do','action plan','roadmap this month','weekly plan'],
+    reply: `**📅 March 2026 — Action Plan for Gupta Fabricators**
+
+**WEEK 1 (1-7 March) — Fix & Collect**
+| Task | Who | Deadline | Priority |
+|---|---|---|---|
+| Order MS Angle + Electrodes | Rajesh | Day 1 | 🔴 Critical |
+| Kumar & Sons payment follow-up | Rajesh | Day 2 | 🔴 Critical |
+| Singh Metals delay communication | Rajesh | Day 1 | 🟠 High |
+| Salary payment (1 March) | Accounts | 1 March | ✅ Fixed |
+
+**WEEK 2 (8-15 March) — Grow & Lock**
+| Task | Who | Deadline | Impact |
+|---|---|---|---|
+| Patel Engineering contract proposal | Rajesh | 10 March | ₹3.6L locked revenue |
+| GeM portal registration | Rajesh/help | 12 March | New revenue channel |
+| Quote Sharma Industries for next order | Rajesh | 14 March | ₹40K+ order |
+
+**WEEK 3 (16-22 March) — Efficiency**
+- Review overtime patterns — target 30% reduction
+- Conduct 1-on-1 with Mohan Das about attendance
+- Implement pre-production checklist across all orders
+
+**WEEK 4 (23-31 March) — Review & Plan**
+- Monthly financial review — compare actuals to ₹5.2L March target
+- GST filing (before 20th)
+- Set April priorities
+
+**March Revenue Target: ₹5.0-5.2L** (+4-8% on February)
+
+**Single Most Impactful Action:** Close Patel Engineering contract by 10 March. Everything else is operational — this one move changes your entire financial trajectory. 🎯`
+  },
+
+  // 24. TECHNOLOGY / DIGITIZATION
+  {
+    keys: ['software','digital','app','technology','computer','automate','tally','excel','system','upgrade tech','digitize','vyaparsetu'],
+    reply: `**💻 Technology Roadmap for Gupta Fabricators**
+
+**Current State (Honest Assessment):**
+Most MSME fabricators still use paper registers and WhatsApp for order tracking. This leads to:
+• Forgotten follow-ups = lost payments
+• No data for bank loans = lower credit limits
+• No trend visibility = reactive instead of proactive decisions
+
+**Technology Stack Recommendation — 3 Stages:**
+
+**Stage 1 — Immediate (Free Tools):**
+✅ **Google Sheets** — Order tracker, client list, payment record
+✅ **WhatsApp Business** — Professional client communication + catalogue
+✅ **Google Drive** — Store all quotations, invoices digitally (never lose a document)
+
+**Stage 2 — Month 2-3 (₹500-1,000/month):**
+🔵 **VyaparSetu AI** (this platform!) — Full business dashboard: orders, inventory, billing, AI advisor
+🔵 **PDF invoice generator** — Professional invoices in 30 seconds
+🔵 **Payment link integration** — Reduce collection time by 40%
+
+**Stage 3 — Year 2 (₹2,000-5,000/month):**
+🟣 **ERP integration** — Full production management with IoT sensors
+🟣 **CRM system** — Client relationship management for 20+ clients
+🟣 **GST reconciliation tool** — Auto-match purchases and sales
+
+**ROI of Digitization:**
+• Saves 2-3 hours/day on manual work
+• Reduces payment delays by 35-40%
+• Improves bank loan eligibility (clean digital records = higher credit)
+• Enables data-driven decisions = 8-12% revenue improvement
+
+**Start today:** WhatsApp Business setup takes 10 minutes. Zero cost. Immediate professional image upgrade. 📱`
+  },
+
+  // 25. EXPANSION / SECOND MACHINE
+  {
+    keys: ['expand','machine','equipment','second machine','cnc','new machine','upgrade','capacity','invest','badhao','do guna'],
+    reply: `**🏭 Business Expansion Analysis**
+
+**Question: Should You Invest in New Equipment Now?**
+
+**Current Capacity Utilization:**
+At ₹4.8L revenue with 16 workers, you're likely at 70-75% capacity. There's room to grow without new machines — just better scheduling.
+
+**When New Equipment Makes Sense:**
+✅ Revenue consistently above ₹6L for 3+ months
+✅ Orders being REJECTED due to capacity (not currently)
+✅ Specific orders requiring capability you don't have (e.g., laser cutting for premium clients)
+
+**Equipment Options & ROI:**
+
+| Equipment | Cost | Monthly Revenue Add | Payback Period |
+|---|---|---|---|
+| CNC Plasma Cutter | ₹8-12L | ₹40-60K | 18-24 months |
+| Hydraulic Press Brake | ₹5-8L | ₹25-35K | 18-20 months |
+| TIG Welding Station | ₹80K-1.2L | ₹20-30K | 4-6 months ✅ |
+| Surface Grinder | ₹3-5L | ₹15-20K | 18-24 months |
+
+**Best Investment Right Now:**
+A TIG welding setup (₹1L) gives fastest payback and enables stainless steel + precision work — higher margin product category.
+
+**Funding Options:**
+• CGTMSE loan — no collateral, up to ₹2 Crore
+• CLCS-TUS Scheme — 15-25% government subsidy on new machines
+• Leasing — lower upfront cost, equipment company owns machine
+
+**Recommendation:** Wait until March revenue hits ₹5.2L consistently, then apply for CGTMSE loan in April. Don't stress cash flow now by investing too early. Timing matters. 📊`
+  },
+
+  // 26. SEASONAL TRENDS
+  {
+    keys: ['season','festival','slow','busy','slow month','peak','dull month','monsoon','summer','year end','q4'],
+    reply: `**📅 Seasonal Business Intelligence**
+
+**Metal Fabrication MSME — Annual Revenue Pattern:**
+
+| Period | Trend | Why |
+|---|---|---|
+| Jan-Mar | ⬆️ Strong | Year-end project completions, budget spending |
+| Apr-May | ➡️ Stable | New FY projects starting |
+| Jun-Aug | ⬇️ Slower | Monsoon slows construction + logistics |
+| Sep-Oct | ⬆️ Peak | Post-monsoon surge, festive season orders |
+| Nov-Dec | ⬆️ Very Strong | Year-end budget utilization (government) |
+
+**You're Currently in:** January-March — your BEST quarter. Use this momentum!
+
+**Preparing for Slow Season (June-August):**
+1. **Build cash reserves now** — target ₹5-6L in bank by May end
+2. **Lock 3-month contracts in March** — guaranteed revenue through monsoon
+3. **Use slow months for maintenance** — service machines, train staff, upgrade systems
+4. **Apply for government orders (GeM)** — government procurement is season-independent
+
+**Festival Season Opportunities (Sep-Oct):**
+• MSME clients often increase orders before Diwali
+• Announce a "Diwali Delivery Guarantee" offer in August — book orders early
+• Offer 3% early-bird discount for orders placed 45 days in advance
+
+**Smart Move:** With your current growth momentum, bank ₹50K-1L extra every month from Feb-May. This fund covers the Jun-Aug slow period without any loan or stress. 💡`
+  },
+
+  // 27. SUPPLIER NEGOTIATION
+  {
+    keys: ['supplier','vendor','mehta traders','negotiate','bargain','better rate','supplier deal','raw material price','purchase cost','maal sasta'],
+    reply: `**🤝 Supplier Negotiation Intelligence**
+
+**Your Negotiation Power:**
+At ₹1.2L/month raw material spend, you're a meaningful customer for most local suppliers. You have more leverage than you realize.
+
+**Key Suppliers & Negotiation Strategy:**
+
+**Mehta Traders (Steel/MS Angle):**
+Current spend: ~₹60-70K/month
+→ Ask for: 6% volume discount if you commit to 3-month purchase guarantee
+→ Script: *"Mehta ji, hum har mahine ₹70K ka order dete hain. Agar hum 3 mahine ka written order de dein advance mein, toh kya 6% ka adjustment ho sakta hai?"*
+→ Likely outcome: 4-5% discount = ₹2,800-3,500 savings/month
+
+**Shree Welding (Electrodes):**
+Current spend: ~₹15-20K/month
+→ Buy 50 boxes at once (vs 30) for 12% discount
+→ Savings: ₹2,400 on one purchase
+
+**Payment Term Negotiation:**
+If suppliers offer "pay in 30 days" instead of immediately:
+→ Your cash stays with you 30 days longer = free working capital
+→ With ₹1.2L monthly purchases, this = effectively ₹1.2L extra cash available always
+
+**New Supplier Strategy:**
+Get quotes from 2 alternate suppliers annually — even if you don't switch, it gives you data to negotiate with your current supplier.
+
+**Annual Savings Potential:** ₹40,000-60,000 per year just from better negotiation — without changing a single product or process. 💰`
+  },
+
+  // 28. QUICK WINS / WHAT TO DO TODAY
+  {
+    keys: ['aaj kya karun','today','right now','abhi','urgent','immediate','quick','fast','top priority','first step','kahan se shuru'],
+    reply: `**⚡ Your Priority Action List — RIGHT NOW**
+
+Based on full business analysis, here's your ranked to-do list:
+
+**🔴 Do in Next 2 Hours:**
+1. **Call Mehta Traders** — Order MS Angle 350kg (stock lasts 4 days, production will halt otherwise)
+2. **Order Welding Electrodes** — 30 boxes from Shree Welding (18% stock, 3-day runway)
+3. **WhatsApp Kumar & Sons** — Payment recovery message (₹21,476 stuck for 18 days)
+
+**🟠 Do Today Before Evening:**
+4. **Send delay notice to Singh Metals** — Proactive communication, revised delivery 22 Feb
+5. **Check Patel Engineering** — Confirm their frame assembly is on track for 22 Feb delivery
+
+**🟡 Do This Week:**
+6. **Propose contract to Patel Engineering** — Lock 6-month commitment with 4% loyalty discount
+7. **Register on GeM portal** — New revenue channel, free, takes 2 hours
+8. **Talk to Mohan Das** — 5 absences, private conversation needed
+
+**🟢 Do This Month:**
+9. **Apply for CGTMSE CC limit** — Free working capital buffer at your bank
+10. **Trademark your brand** — If launching VyaparSetu AI, protect the name (₹4,500 with DPIIT recognition)
+
+**The Golden Rule:** Items 1, 2, 3 today = ₹21K recovered + production saved = ₹1L+ revenue protected. Everything else can wait until tomorrow.
+
+**Shuru karo. Abhi. 💪**`
+  }
+
+];
+
+// Fallback responses — varied, non-repetitive
+const FALLBACK_RESPONSES = [
+  `**Great question!** Based on your current data, here's what stands out:
+
+Your business fundamentals are strong — ₹4.8L revenue with 12% growth, healthy cash at ₹3.7L projected closing, and a growing client in Patel Engineering. These are signs of a well-run MSME.
+
+**Two things need immediate attention:**
+• MS Angle and Welding Electrodes are critically low — production can halt in 3-4 days
+• Kumar & Sons ₹21,476 is 18 days overdue — follow up today
+
+For a more specific analysis, try asking about: inventory, cash flow, clients, pricing strategy, GST, hiring, or government schemes. I have detailed intelligence on all of these! 🎯`,
+
+  `**Bilkul! Aapke sawaal ka jawab deta hoon.**
+
+Gupta Fabricators ka current status dekha jaaye toh:
+- Revenue growth excellent hai (12% MoM)  
+- Cash flow comfortable hai ₹3.7L projected closing ke saath
+- Main tension: stock critical hai aur Kumar & Sons ka payment ruka hai
+
+Koi specific topic pe jaana chahein? Jaise:
+• 💰 Pricing strategy — kaise quote karein
+• 📦 Inventory management — kya order karein
+• 🏛️ Government schemes — kya benefits milenge
+• 👷 Staff management — team ko kaise handle karein
+
+Puchiye — main poora analysis de sakta hoon! 💪`,
+
+  `**Here's what the data is telling us:**
+
+Looking across all your business modules — the biggest opportunity right now is **Patel Engineering**. They've grown 20%+ for 3 consecutive months and pay on time. This is your highest-value client relationship and deserves a formal contract conversation.
+
+The biggest risk is the **raw material shortage** — MS Angle at 24% and Welding Electrodes at 18% means production could halt in 3-4 days. This should be your first action today.
+
+Want me to go deeper on any specific area? I can analyse pricing, cash flow, client strategy, government schemes, hiring, quality improvement, seasonal planning, or procurement in detail. Just ask! 📊`
+];
+
+let fallbackIndex = 0;
+
+function getDemoResponse(question) {
+  const q = question.toLowerCase();
+  for (const r of DEMO_RESPONSES) {
+    if (r.keys.some(k => q.includes(k))) return r.reply;
+  }
+  // Rotate through fallbacks
+  const resp = FALLBACK_RESPONSES[fallbackIndex % FALLBACK_RESPONSES.length];
+  fallbackIndex++;
+  return resp;
+}
+
+// ── AI CHAT ──
+const SYSTEM_PROMPT = `You are VyaparSetu AI Advisor, an expert business intelligence assistant for Indian MSME (Micro Small Medium Enterprise) owners, specifically metal fabrication businesses.
+
+Current business context:
+- Business: Gupta Fabricators — metal fabrication MSME
+- Monthly Revenue: ₹4.8L (up 12% vs last month)
+- Active Orders: 18 (2 delayed — Conveyor Frame for Singh Metals)
+- Pending Payments: ₹1.2L (Kumar & Sons ₹21,476 overdue 18 days)
+- Staff: 16 total, 14 present today, payroll ₹1.4L/month
+- Inventory: HR Sheet 72% (good), MS Angle 24% (critical), Welding Electrodes 18% (critical)
+- Cash: ₹2.8L opening, ₹4.1L inflow, ₹3.2L outflow, ₹3.7L projected closing
+- Key clients: Sharma Industries, Mehta Fabricators, Patel Engineering (growing fast), Kumar & Sons (payment risk), Singh Metals
+
+Key rules:
+1. Give practical, actionable advice for Indian MSME context
+2. Use Indian currency (₹), Indian business context (GST, MSME schemes, etc.)
+3. Respond in the same language the user uses — if they write in Hindi/Hinglish, respond similarly
+4. Keep responses concise but insightful — use bullet points for clarity
+5. When suggesting strategies, consider the owner is likely a family business with limited resources
+6. Be warm, encouraging, and direct — like a trusted business mentor
+7. Highlight risks clearly but always end with actionable next steps`;
+
+let chatHistory = [];
+
+async function callAI(userMsg) {
+  chatHistory.push({ role: 'user', content: userMsg });
+
+  // ── DEMO MODE: Return pre-written response instantly (no API call) ──
+  if (isDemoMode) {
+    await new Promise(r => setTimeout(r, 1200 + Math.random() * 800)); // Realistic delay
+    const text = getDemoResponse(userMsg);
+    chatHistory.push({ role: 'assistant', content: text });
+    return text;
+  }
+
+  // ── LIVE MODE: Call real Claude API via secure Netlify function ──
+  const resp = await fetch('/api/chat', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ systemPrompt: SYSTEM_PROMPT, messages: chatHistory })
+  });
+  const data = await resp.json();
+  const text = data.content?.[0]?.text || 'Sorry, I could not get a response. Please try again.';
+  chatHistory.push({ role: 'assistant', content: text });
+  return text;
+}
+
+function addMsg(role, text) {
+  const box = document.getElementById('chatMsgs');
+  const div = document.createElement('div');
+  div.className = `msg ${role}`;
+  const av = document.createElement('div'); av.className = 'msg-avatar';
+  av.textContent = role === 'ai' ? '🤖' : '👤';
+  const bubble = document.createElement('div'); bubble.className = 'msg-bubble';
+  bubble.innerHTML = text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+  div.appendChild(av); div.appendChild(bubble);
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+}
+
+function addTyping() {
+  const box = document.getElementById('chatMsgs');
+  const div = document.createElement('div'); div.className = 'msg ai'; div.id = 'typingDiv';
+  const av = document.createElement('div'); av.className = 'msg-avatar'; av.textContent = '🤖';
+  const t = document.createElement('div'); t.className = 'typing';
+  t.innerHTML = '<span></span><span></span><span></span>';
+  div.appendChild(av); div.appendChild(t);
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+}
+
+async function sendMsg() {
+  const inp = document.getElementById('chatIn');
+  const txt = inp.value.trim();
+  if (!txt) return;
+  inp.value = '';
+  document.getElementById('sendBtn').disabled = true;
+
+  // Navigate to AI page if not there
+  showPage('ai', document.querySelector('.ai-nav-item'));
+
+  addMsg('user', txt);
+  addTyping();
+  try {
+    const reply = await callAI(txt);
+    document.getElementById('typingDiv')?.remove();
+    addMsg('ai', reply);
+  } catch(e) {
+    document.getElementById('typingDiv')?.remove();
+    addMsg('ai', '⚠️ Could not connect to AI. Please check your internet connection and try again.');
+  }
+  document.getElementById('sendBtn').disabled = false;
+}
+
+// Trigger AI from other pages — navigates to AI page and asks
+async function askAI(question) {
+  showPage('ai', document.querySelector('.ai-nav-item'));
+  document.getElementById('chatIn').value = '';
+  addMsg('user', question);
+  addTyping();
+  document.getElementById('sendBtn').disabled = true;
+  try {
+    const reply = await callAI(question);
+    document.getElementById('typingDiv')?.remove();
+    addMsg('ai', reply);
+  } catch(e) {
+    document.getElementById('typingDiv')?.remove();
+    addMsg('ai', '⚠️ Could not connect to AI. Please check your internet connection and try again.');
+  }
+  document.getElementById('sendBtn').disabled = false;
+}
+
+function askAIFromCard(q) { askAI(q); }
+function fillQ(el) { document.getElementById('chatIn').value = el.textContent; document.getElementById('chatIn').focus(); }
+</script>
+</body>
+</html>
